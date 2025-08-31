@@ -1,0 +1,4 @@
+[submodule "CryptoForestLib"]
+	path = CryptoForestLib
+	url = https://github.com/SilvanBauer/cryptoforest-lib.git
+	branch = feature/initial-implementation
