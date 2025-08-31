@@ -22,10 +22,15 @@
       https://aka.platform.uno/singleproject-features
     -->
     <UnoFeatures>
-      Hosting;
-      MVUX;
-      SkiaRenderer;
+        Hosting;
+        MVUX;
+        Configuration;
+        Localization;
+        SkiaRenderer;
     </UnoFeatures>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Strings\de\" />
+  </ItemGroup>
 
 </Project>

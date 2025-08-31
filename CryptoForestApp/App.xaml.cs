@@ -1,3 +1,5 @@
+using CryptoForestApp.Models;
+using CryptoForestApp.Services.HistoryService;
 using Uno.Resizetizer;
 
 namespace CryptoForestApp;
@@ -23,10 +25,19 @@ public partial class App : Application
                 // Switch to Development environment when running in DEBUG
                 .UseEnvironment(Environments.Development)
 #endif
+                .UseConfiguration(configure: configBuilder =>
+                    configBuilder
+                        .EmbeddedSource<App>()
+                        .Section<AppConfig>()
+                )
+                .UseLocalization()
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Register your services
-                    //services.AddSingleton<IMyService, MyService>();
+                    // Register services
+                    services.AddSingleton<IHistoryService, HistoryService>();
+
+                    // Register view models
+                    services.AddTransient<MainViewModel>();
                 })
             );
         MainWindow = builder.Window;
