@@ -1,6 +1,6 @@
 using CryptoForestApp.Models;
+using CryptoForestApp.Presentation;
 using CryptoForestApp.Services.HistoryService;
-using Uno.Resizetizer;
 
 namespace CryptoForestApp;
 public partial class App : Application
@@ -14,10 +14,11 @@ public partial class App : Application
         this.InitializeComponent();
     }
 
-    protected Window? MainWindow { get; private set; }
-    internal IHost? Host { get; private set; }
+    // Workaround: Changed to internal to be able to close main window from code
+    internal Window? MainWindow { get; private set; }
+    protected IHost? Host { get; private set; }
 
-    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         var builder = this.CreateBuilder(args)
             .Configure(host => host
@@ -33,12 +34,9 @@ public partial class App : Application
                 .UseLocalization()
                 .ConfigureServices((context, services) =>
                 {
-                    // Register services
                     services.AddSingleton<IHistoryService, HistoryService>();
-
-                    // Register view models
-                    services.AddTransient<MainViewModel>();
                 })
+                .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
             );
         MainWindow = builder.Window;
 
@@ -47,27 +45,25 @@ public partial class App : Application
 #endif
         MainWindow.SetWindowIcon();
 
-        Host = builder.Build();
+        Host = await builder.NavigateAsync<Shell>();
+    }
 
-        // Do not repeat app initialization when the Window already has content,
-        // just ensure that the window is active
-        if (MainWindow.Content is not Frame rootFrame)
-        {
-            // Create a Frame to act as the navigation context and navigate to the first page
-            rootFrame = new Frame();
+    private static void RegisterRoutes(IViewRegistry views, IRouteRegistry routes)
+    {
+        views.Register(
+            new ViewMap(ViewModel: typeof(ShellModel)),
+            new ViewMap<MainPage, MainModel>(),
+            new DataViewMap<OpenPage, OpenPageModel, OpenPageUrl>()
+        );
 
-            // Place the frame in the current Window
-            MainWindow.Content = rootFrame;
-        }
-
-        if (rootFrame.Content == null)
-        {
-            // When the navigation stack isn't restored navigate to the first page,
-            // configuring the new page by passing required information as a navigation
-            // parameter
-            rootFrame.Navigate(typeof(MainPage), args.Arguments);
-        }
-        // Ensure the current window is active
-        MainWindow.Activate();
+        routes.Register(
+            new RouteMap("", View: views.FindByViewModel<ShellModel>(),
+                Nested:
+                [
+                    new ("Main", View: views.FindByViewModel<MainModel>(), IsDefault:true),
+                    new ("OpenPage", View: views.FindByViewModel<OpenPageModel>()),
+                ]
+            )
+        );
     }
 }
