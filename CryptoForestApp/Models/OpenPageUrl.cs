@@ -1,2 +1,2 @@
 namespace CryptoForestApp.Models;
-internal record OpenPageUrl(string url);
+internal record OpenPageUrl(string Url);

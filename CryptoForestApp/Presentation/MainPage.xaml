@@ -26,8 +26,8 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5" Spacing="5">
             <Button x:Uid="OpenButton" Width="150" Command="{Binding OpenAsync}" />
-            <Button x:Uid="AddButton" Width="150"  />
-            <Button x:Uid="CreateButton" Width="150"  />
+            <Button x:Uid="AddButton" Width="150" Command="{Binding AddAsync}" />
+            <Button x:Uid="CreateButton" Width="150" Command="{Binding CreateAsync}" />
         </StackPanel>
         <Button x:Uid="CancelButton" Grid.Row="2" Grid.Column="1" Margin="5" Width="150" Click="Cancel" />
     </Grid>

@@ -24,16 +24,8 @@ internal class HistoryService : IHistoryService
 
     public void Add(string path)
     {
+        _history.Remove(path);
         _history.Insert(0, path);
         SaveHistory();
-    }
-
-    public void MoveUp(string path)
-    {
-        if (_history.Contains(path))
-        {
-            _history.Remove(path);
-            Add(path);
-        }
     }
 }

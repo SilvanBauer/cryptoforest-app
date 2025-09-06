@@ -30,5 +30,13 @@
         SkiaRenderer;
     </UnoFeatures>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CryptoForestLib\CryptoForestLibrary.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Presentation\CryptoForestPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
 
 </Project>

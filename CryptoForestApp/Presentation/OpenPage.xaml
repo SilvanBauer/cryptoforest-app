@@ -7,8 +7,26 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Padding="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
 
-    <Grid>
-        <TextBlock Text="TODO" />
+        <TextBlock x:Uid="OpenTextBlock" Grid.ColumnSpan="2" Margin="5" FontWeight="Bold" />
+
+        <TextBox x:Uid="ConfigurationFileTextBox" Grid.Row="1" Margin="5" Text="{Binding SelectedFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="false" />
+        <Button x:Uid="SelectButton" Grid.Row="1" Grid.Column="1" Margin="0 5 5 5" VerticalAlignment="Bottom" Width="150" Command="{Binding SelectConfigurationFileAsync}" />
+
+        <PasswordBox x:Uid="PasswordTextBox" Grid.Row="2" Grid.ColumnSpan="2" Margin="5" IsPasswordRevealButtonEnabled="True" Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <Button x:Uid="OpenButton" Grid.Row="3" Margin="5" VerticalAlignment="Bottom" Width="150" Command="{Binding OpenAsync}" />
+        <Button x:Uid="BackButton" Grid.Row="3" Grid.Column="1" Margin="5" VerticalAlignment="Bottom" Width="150" Command="{Binding BackAsync}" />
     </Grid>
 </Page>

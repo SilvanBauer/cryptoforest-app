@@ -135,4 +135,52 @@
   <data name="OpenButton.Content" xml:space="preserve">
     <value>Open</value>
   </data>
+  <data name="OpenTextBlock.Text" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="ConfigurationFileTextBox.Header" xml:space="preserve">
+    <value>Configuration file</value>
+  </data>
+  <data name="SelectButton.Content" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="PasswordTextBox.Header" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="BackButton.Content" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="CreateDialog.Title" xml:space="preserve">
+    <value>Create CryptoForest</value>
+  </data>
+  <data name="CreateDialog.Content" xml:space="preserve">
+    <value>This folder is not empty. Are you sure you want to create the CryptoForest there?</value>
+  </data>
+  <data name="CreateDialog.CreateButton" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CreateDialog.CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SearchTextBox.PlaceholderText" xml:space="preserve">
+    <value>Search by name...</value>
+  </data>
+  <data name="ResetButton.Content" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="DecryptButton.Content" xml:space="preserve">
+    <value>Decrypt</value>
+  </data>
+  <data name="DeleteButton.Content" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="MoveButton.Content" xml:space="preserve">
+    <value>Move</value>
+  </data>
+  <data name="AddLevelButton.Content" xml:space="preserve">
+    <value>Add Level</value>
+  </data>
+  <data name="ExportButton.Content" xml:space="preserve">
+    <value>Export</value>
+  </data>
 </root>

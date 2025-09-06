@@ -1,22 +1,77 @@
 using CryptoForestApp.Models;
 using CryptoForestApp.Services.HistoryService;
+using CryptoForestLibrary;
+using CryptoForestLibrary.Cryptograph.Storage;
+using Microsoft.Extensions.Localization;
+using Windows.Storage.Pickers;
 
 namespace CryptoForestApp.Presentation;
 internal partial record MainModel
 {
     private readonly IHistoryService _historyService;
+    private readonly IStringLocalizer _stringLocalizer;
     private readonly INavigator _navigator;
 
     public IState<string> SelectedHistoryItem { get; set; }
-    public IListFeed<string> History => ListFeed<string>.Async(async (_) => _historyService.Get());
+    public IListFeed<string> History => ListFeed<string>.Async(async _ => _historyService.Get());
 
-    public MainModel(IHistoryService historyService, INavigator navigator)
+    public MainModel(IHistoryService historyService, IStringLocalizer stringLocalizer, INavigator navigator)
     {
         _historyService = historyService;
+        _stringLocalizer = stringLocalizer;
         _navigator = navigator;
+
         SelectedHistoryItem = State.Value(this, () => string.Empty);
     }
 
     public async Task OpenAsync(CancellationToken cancellationToken)
-        => await _navigator.NavigateViewModelAsync<OpenPageModel>(this, data: new OpenPageUrl(await SelectedHistoryItem.Value(cancellationToken)));
+    {
+        var selectedUrl = (await SelectedHistoryItem.Value(cancellationToken))!;
+        if (selectedUrl != string.Empty)
+        {
+            await _navigator.NavigateViewModelAsync<OpenViewModel>(this, data: new OpenPageUrl(selectedUrl), cancellation: cancellationToken);
+        }
+    }
+
+    public async Task AddAsync(CancellationToken cancellationToken)
+    {
+        var folderPicker = new FolderPicker();
+        StorageFolder? folder = await folderPicker.PickSingleFolderAsync();
+        if (folder != null)
+        {
+            await _navigator.NavigateViewModelAsync<OpenViewModel>(this, data: new OpenPageUrl(folder.Path), cancellation: cancellationToken);
+        }
+    }
+
+    public async Task CreateAsync(CancellationToken cancellationToken)
+    {
+        var folderPicker = new FolderPicker();
+        StorageFolder? folder = await folderPicker.PickSingleFolderAsync();
+        if (folder != null)
+        {
+            // Check if folder is empty and if not ask user for confirmation
+            var continueOnNonEmptyFolder = Directory.GetFiles(folder.Path).Length == 0 && Directory.GetDirectories(folder.Path).Length == 0;
+            if (!continueOnNonEmptyFolder)
+            {
+                var createResult = await _navigator.ShowMessageDialogAsync<string>(
+                    this,
+                    title: _stringLocalizer["CreateDialog.Title"],
+                    content: _stringLocalizer["CreateDialog.Content"],
+                    buttons: [
+                        new DialogAction(_stringLocalizer["CreateDialog.CreateButton"]),
+                        new DialogAction(_stringLocalizer["CreateDialog.CancelButton"])
+                    ],
+                    cancellation: cancellationToken);
+                continueOnNonEmptyFolder = createResult == _stringLocalizer["CreateDialog.CreateButton"];
+            }
+
+            // Open CryptoForest view if folder was empty or user confirmed
+            if (continueOnNonEmptyFolder)
+            {
+                var storage = new CryptoForestFileStorage(folder.Path);
+                var cryptoForest = AesCryptoForest.CreateCryptoForest(storage);
+                await _navigator.NavigateViewModelAsync<CryptoForestViewModel>(this, data: cryptoForest, cancellation: cancellationToken);
+            }
+        }
+    }
 }
