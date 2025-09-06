@@ -4,9 +4,11 @@
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
+    <UnoIconForegroundFile>Assets/Icons/logo.png</UnoIconForegroundFile>
+    <UnoSplashScreenFile>Assets/Splash/logo_splash.png</UnoSplashScreenFile>
 
     <!-- Display name -->
-    <ApplicationTitle>Crypto Forest App</ApplicationTitle>
+    <ApplicationTitle>Crypto Forest</ApplicationTitle>
     <!-- App Identifier -->
     <ApplicationId>ch.silvanbauer.CryptoForestApp</ApplicationId>
     <!-- Versions -->
