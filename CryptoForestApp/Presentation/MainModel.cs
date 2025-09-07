@@ -1,4 +1,4 @@
-using CryptoForestApp.Models;
+using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Services.HistoryService;
 using CryptoForestLibrary;
 using CryptoForestLibrary.Cryptograph.Storage;
@@ -29,7 +29,7 @@ internal partial record MainModel
         var selectedUrl = (await SelectedHistoryItem.Value(cancellationToken))!;
         if (selectedUrl != string.Empty)
         {
-            await _navigator.NavigateViewModelAsync<OpenViewModel>(this, data: new OpenPageUrl(selectedUrl), cancellation: cancellationToken);
+            await _navigator.NavigateViewModelAsync<OpenViewModel>(this, data: new OpenDto(selectedUrl), cancellation: cancellationToken);
         }
     }
 
@@ -39,7 +39,7 @@ internal partial record MainModel
         StorageFolder? folder = await folderPicker.PickSingleFolderAsync();
         if (folder != null)
         {
-            await _navigator.NavigateViewModelAsync<OpenViewModel>(this, data: new OpenPageUrl(folder.Path), cancellation: cancellationToken);
+            await _navigator.NavigateViewModelAsync<OpenViewModel>(this, data: new OpenDto(folder.Path), cancellation: cancellationToken);
         }
     }
 
@@ -70,7 +70,7 @@ internal partial record MainModel
             {
                 var storage = new CryptoForestFileStorage(folder.Path);
                 var cryptoForest = AesCryptoForest.CreateCryptoForest(storage);
-                await _navigator.NavigateViewModelAsync<CryptoForestViewModel>(this, data: cryptoForest, cancellation: cancellationToken);
+                await _navigator.NavigateViewModelAsync<CryptoForestViewModel>(this, data: new CryptoForestDto(cryptoForest), cancellation: cancellationToken);
             }
         }
     }

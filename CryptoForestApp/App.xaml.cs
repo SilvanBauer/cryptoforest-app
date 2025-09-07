@@ -1,7 +1,10 @@
 using CryptoForestApp.Models;
+using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Presentation;
+using CryptoForestApp.Presentation.Dialogs;
 using CryptoForestApp.Services.HistoryService;
 using CryptoForestLibrary;
+using CryptoForestLibrary.Cryptograph.Algorithm;
 
 namespace CryptoForestApp;
 public partial class App : Application
@@ -53,18 +56,27 @@ public partial class App : Application
     {
         views.Register(
             new ViewMap(ViewModel: typeof(ShellModel)),
+
+            // Pages
             new ViewMap<MainPage, MainViewModel>(),
-            new DataViewMap<OpenPage, OpenViewModel, OpenPageUrl>(),
-            new DataViewMap<CryptoForestPage, CryptoForestViewModel, AesCryptoForest>()
+            new DataViewMap<OpenPage, OpenViewModel, OpenDto>(),
+            new DataViewMap<CryptoForestPage, CryptoForestViewModel, CryptoForestDto>(),
+
+            // Dialogs
+            new DataViewMap<MoveContentDialog, MoveViewModel, MoveDto>()
         );
 
         routes.Register(
             new RouteMap("", View: views.FindByViewModel<ShellModel>(),
                 Nested:
                 [
+                    // Pages
                     new ("Main", View: views.FindByViewModel<MainViewModel>(), IsDefault:true),
-                    new ("OpenPage", View: views.FindByViewModel<OpenViewModel>()),
-                    new ("CryptoForest", View: views.FindByViewModel<CryptoForestViewModel>())
+                    new ("Open", View: views.FindByViewModel<OpenViewModel>()),
+                    new ("CryptoForest", View: views.FindByViewModel<CryptoForestViewModel>()),
+
+                    // Dialogs
+                    new ("Move", View: views.FindByViewModel<MoveViewModel>())
                 ]
             )
         );
