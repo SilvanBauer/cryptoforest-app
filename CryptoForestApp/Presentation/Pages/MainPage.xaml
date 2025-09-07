@@ -1,7 +1,7 @@
-﻿<Page x:Class="CryptoForestApp.Presentation.MainPage"
+﻿<Page x:Class="CryptoForestApp.Presentation.Pages.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:CryptoForestApp"
+      xmlns:local="using:CryptoForestApp.Presentation.Pages"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Grid Padding="5">
         <Grid.RowDefinitions>

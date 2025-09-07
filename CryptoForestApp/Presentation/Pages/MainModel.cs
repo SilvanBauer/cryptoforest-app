@@ -5,7 +5,7 @@ using CryptoForestLibrary.Cryptograph.Storage;
 using Microsoft.Extensions.Localization;
 using Windows.Storage.Pickers;
 
-namespace CryptoForestApp.Presentation;
+namespace CryptoForestApp.Presentation.Pages;
 internal partial record MainModel
 {
     private readonly IHistoryService _historyService;

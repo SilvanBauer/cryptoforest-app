@@ -1,4 +1,4 @@
-namespace CryptoForestApp.Presentation;
+namespace CryptoForestApp.Presentation.Pages;
 
 public sealed partial class MainPage : Page
 {

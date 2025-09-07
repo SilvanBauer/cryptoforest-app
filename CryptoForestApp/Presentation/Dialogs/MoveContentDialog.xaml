@@ -3,7 +3,7 @@
     x:Class="CryptoForestApp.Presentation.Dialogs.MoveContentDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CryptoForestApp.Presentation"
+    xmlns:local="using:CryptoForestApp.Presentation.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Style="{ThemeResource DefaultContentDialogStyle}"
     PrimaryButtonCommand="{Binding MoveAsync}">

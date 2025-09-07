@@ -2,7 +2,6 @@ using CryptoForestApp.Models;
 using CryptoForestApp.Models.Dtos;
 using CryptoForestLibrary.Config;
 using Microsoft.Extensions.Localization;
-using Uno.Extensions.Specialized;
 
 namespace CryptoForestApp.Presentation.Dialogs;
 internal partial record MoveModel

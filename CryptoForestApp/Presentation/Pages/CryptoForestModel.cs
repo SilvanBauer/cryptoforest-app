@@ -1,7 +1,7 @@
 using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Presentation.Dialogs;
 
-namespace CryptoForestApp.Presentation;
+namespace CryptoForestApp.Presentation.Pages;
 internal partial record CryptoForestModel
 {
     private readonly INavigator _navigator;

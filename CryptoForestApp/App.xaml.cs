@@ -2,6 +2,7 @@ using CryptoForestApp.Models;
 using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Presentation;
 using CryptoForestApp.Presentation.Dialogs;
+using CryptoForestApp.Presentation.Pages;
 using CryptoForestApp.Services.HistoryService;
 using CryptoForestLibrary;
 using CryptoForestLibrary.Cryptograph.Algorithm;
