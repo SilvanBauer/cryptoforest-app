@@ -183,4 +183,19 @@
   <data name="ExportButton.Content" xml:space="preserve">
     <value>Export</value>
   </data>
+  <data name="MoveDialog.Title" xml:space="preserve">
+    <value>Move data</value>
+  </data>
+  <data name="MoveDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Move</value>
+  </data>
+  <data name="MoveDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="NewLevelComboBox.Header" xml:space="preserve">
+    <value>New level</value>
+  </data>
+  <data name="BaseLevel" xml:space="preserve">
+    <value>Base level</value>
+  </data>
 </root>

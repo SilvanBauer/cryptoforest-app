@@ -1,19 +1,22 @@
 using CryptoForestApp.Models;
 using CryptoForestApp.Models.Dtos;
 using CryptoForestLibrary.Config;
+using Microsoft.Extensions.Localization;
 using Uno.Extensions.Specialized;
 
 namespace CryptoForestApp.Presentation.Dialogs;
 internal partial record MoveModel
 {
+    private readonly IStringLocalizer _stringLocalizer;
     private readonly MoveDto _moveDto;
 
     public IState<int> SelectedLevelIndex { get; set; }
     private IImmutableList<ValueText<Guid>> _levels;
     public IListFeed<ValueText<Guid>> Levels => ListFeed<ValueText<Guid>>.Async(async _ => _levels);
 
-    public MoveModel(MoveDto moveDto)
+    public MoveModel(IStringLocalizer stringLocalizer, MoveDto moveDto)
     {
+        _stringLocalizer = stringLocalizer;
         _moveDto = moveDto;
         _levels = CreateLevelsSource();
 
@@ -30,7 +33,7 @@ internal partial record MoveModel
     private IImmutableList<ValueText<Guid>> CreateLevelsSource()
     {
         var baseLevel = _moveDto.CryptoForest.GetBaseLevel();
-        var levels = new List<ValueText<Guid>>([ new ValueText<Guid>("Basis Ebene", baseLevel.EntryGuid) ]);
+        var levels = new List<ValueText<Guid>>([ new ValueText<Guid>(_stringLocalizer["BaseLevel"], baseLevel.EntryGuid) ]);
         AddLevels(baseLevel);
 
         return [.. levels.OrderBy(l => l.Text)];
