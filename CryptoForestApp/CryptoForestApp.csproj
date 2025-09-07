@@ -36,6 +36,11 @@
     <ProjectReference Include="..\CryptoForestLib\CryptoForestLibrary.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Presentation\Pages\HistoryPage.xaml.cs">
+      <DependentUpon>HistoryPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Presentation\Dialogs\MoveContentDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

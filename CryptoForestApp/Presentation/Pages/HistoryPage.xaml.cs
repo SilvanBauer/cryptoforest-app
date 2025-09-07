@@ -1,8 +1,8 @@
 namespace CryptoForestApp.Presentation.Pages;
 
-public sealed partial class MainPage : Page
+public sealed partial class HistoryPage : Page
 {
-    public MainPage()
+    public HistoryPage()
     {
         this.InitializeComponent();
     }

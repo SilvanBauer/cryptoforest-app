@@ -59,7 +59,7 @@ public partial class App : Application
             new ViewMap(ViewModel: typeof(ShellModel)),
 
             // Pages
-            new ViewMap<MainPage, MainViewModel>(),
+            new ViewMap<HistoryPage, HistoryViewModel>(),
             new DataViewMap<OpenPage, OpenViewModel, OpenDto>(),
             new DataViewMap<CryptoForestPage, CryptoForestViewModel, CryptoForestDto>(),
 
@@ -72,7 +72,7 @@ public partial class App : Application
                 Nested:
                 [
                     // Pages
-                    new ("Main", View: views.FindByViewModel<MainViewModel>(), IsDefault:true),
+                    new ("Main", View: views.FindByViewModel<HistoryViewModel>(), IsDefault:true),
                     new ("Open", View: views.FindByViewModel<OpenViewModel>()),
                     new ("CryptoForest", View: views.FindByViewModel<CryptoForestViewModel>()),
 

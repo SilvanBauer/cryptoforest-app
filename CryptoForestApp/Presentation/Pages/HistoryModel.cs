@@ -6,7 +6,7 @@ using Microsoft.Extensions.Localization;
 using Windows.Storage.Pickers;
 
 namespace CryptoForestApp.Presentation.Pages;
-internal partial record MainModel
+internal partial record HistoryModel
 {
     private readonly IHistoryService _historyService;
     private readonly IStringLocalizer _stringLocalizer;
@@ -15,7 +15,7 @@ internal partial record MainModel
     public IState<string> SelectedHistoryItem { get; set; }
     public IListFeed<string> History => ListFeed<string>.Async(async _ => _historyService.Get());
 
-    public MainModel(IHistoryService historyService, IStringLocalizer stringLocalizer, INavigator navigator)
+    public HistoryModel(IHistoryService historyService, IStringLocalizer stringLocalizer, INavigator navigator)
     {
         _historyService = historyService;
         _stringLocalizer = stringLocalizer;
