@@ -1,20 +1,26 @@
+using System.Text;
 using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Services.HistoryService;
+using CryptoForestLibrary;
+using CryptoForestLibrary.Cryptograph.Storage;
+using Microsoft.Extensions.Localization;
 using Windows.Storage.Pickers;
 
 namespace CryptoForestApp.Presentation;
 internal partial record OpenModel
 {
     private readonly INavigator _navigator;
+    private readonly IStringLocalizer _stringLocalizer;
     private readonly IHistoryService _historyService;
     private readonly OpenDto _openDto;
 
     public IState<string> SelectedFile { get; set; }
     public IState<string> Password { get; set; }
 
-    public OpenModel(INavigator navigator, IHistoryService historyService, OpenDto openDto)
+    public OpenModel(INavigator navigator, IStringLocalizer stringLocalizer, IHistoryService historyService, OpenDto openDto)
     {
         _navigator = navigator;
+        _stringLocalizer = stringLocalizer;
         _historyService = historyService;
         _openDto = openDto;
 
@@ -35,9 +41,35 @@ internal partial record OpenModel
 
     public async Task OpenAsync(CancellationToken cancellationToken)
     {
-        // TODO implement
-        Console.WriteLine($"Url: {_openDto.Url}, Selected File: {await SelectedFile.Value(cancellationToken)}, Password: {await Password.Value(cancellationToken)}");
-        _historyService.Add(_openDto.Url);
+        // Create 32 byte key from password
+        var password = (await Password.Value(cancellationToken))!;
+        while (password.Length < 16)
+        {
+            password = $"#{password}";
+        }
+
+        var key = Encoding.UTF8.GetBytes(password);
+
+        // Create crypto forest and change view
+        try
+        {
+            var storage = new CryptoForestFileStorage(_openDto.Path);
+            var cryptoForest = new AesCryptoForest(storage, key, (await SelectedFile.Value(cancellationToken))!);
+            _historyService.Add(_openDto.Path);
+            await _navigator.NavigateViewAsync<CryptoForestViewModel>(this, data: new CryptoForestDto(cryptoForest), cancellation: cancellationToken);
+        }
+        catch
+        {
+            // Handle exception on decrypting config
+            await _navigator.ShowMessageDialogAsync<string>(
+                    this,
+                    title: _stringLocalizer["OpenFailureDialog.Title"],
+                    content: _stringLocalizer["OpenFailureDialog.Content"],
+                    buttons: [
+                        new DialogAction(_stringLocalizer["OpenFailureDialog.OkButton"])
+                    ],
+                    cancellation: cancellationToken);
+        }
     }
 
     public Task BackAsync(CancellationToken cancellationToken)

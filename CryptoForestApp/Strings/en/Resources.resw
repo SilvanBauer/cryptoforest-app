@@ -198,4 +198,13 @@
   <data name="BaseLevel" xml:space="preserve">
     <value>Base level</value>
   </data>
+  <data name="OpenFailureDialog.Title" xml:space="preserve">
+    <value>Opening failed</value>
+  </data>
+  <data name="OpenFailureDialog.Content" xml:space="preserve">
+    <value>Could not open the CryptoForest. Either the password was wrong or the file is not valid or corrupted.</value>
+  </data>
+  <data name="OpenFailureDialog.OkButton" xml:space="preserve">
+    <value>Ok</value>
+  </data>
 </root>

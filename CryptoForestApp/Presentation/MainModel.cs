@@ -26,10 +26,10 @@ internal partial record MainModel
 
     public async Task OpenAsync(CancellationToken cancellationToken)
     {
-        var selectedUrl = (await SelectedHistoryItem.Value(cancellationToken))!;
-        if (selectedUrl != string.Empty)
+        var selectedPath = (await SelectedHistoryItem.Value(cancellationToken))!;
+        if (selectedPath != string.Empty)
         {
-            await _navigator.NavigateViewModelAsync<OpenViewModel>(this, data: new OpenDto(selectedUrl), cancellation: cancellationToken);
+            await _navigator.NavigateViewModelAsync<OpenViewModel>(this, data: new OpenDto(selectedPath), cancellation: cancellationToken);
         }
     }
 
