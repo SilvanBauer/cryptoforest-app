@@ -1,6 +1,6 @@
 using CryptoForestApp.Models;
 using CryptoForestApp.Models.Dtos;
-using CryptoForestLibrary.Config;
+using CryptoForestApp.Services.LevelsSourceProvider;
 using CryptoForestLibrary.DirectoryStructure;
 using Microsoft.Extensions.Localization;
 using Windows.Storage.Pickers;
@@ -18,6 +18,7 @@ internal partial record AddItemModel
 
     public IState<bool> IsTextSelected { get; set; }
 
+    // Workaround: As using an array in a state doesn't seem to properly work with the updates I extracted it
     private string[] _selectedFiles;
     public IState<string> SelectedFiles { get; set; }
 
@@ -26,17 +27,17 @@ internal partial record AddItemModel
     public IState<string> TextData { get; set; }
 
     public IState<int> SelectedLevelIndex { get; set; }
-    private IImmutableList<ValueText<Guid>> _levels;
+    private readonly IImmutableList<ValueText<Guid>> _levels;
     public IListFeed<ValueText<Guid>> Levels => ListFeed<ValueText<Guid>>.Async(async _ => _levels);
 
     public IState<string> ItemName { get; set; }
 
-    public AddItemModel(INavigator navigator, IStringLocalizer stringLocalizer, AddItemDto addItemDto)
+    public AddItemModel(INavigator navigator, IStringLocalizer stringLocalizer, LevelsSourceProvider levelsSourceProvider, AddItemDto addItemDto)
     {
         _navigator = navigator;
         _stringLocalizer = stringLocalizer;
         _addItemDto = addItemDto;
-        _levels = CreateLevelsSource();
+        _levels = levelsSourceProvider.CreateLevelsSource(_addItemDto.CryptoForest);
 
         IsFilesSelected = State.Value(this, () => true);
         IsDirectorySelected = State.Value(this, () => false);
@@ -84,10 +85,10 @@ internal partial record AddItemModel
         {
             await _navigator.ShowMessageDialogAsync<string>(
                     this,
-                    title: _stringLocalizer["NoFilesSelected.Title"],
-                    content: _stringLocalizer["NoFilesSelected.Content"],
+                    title: _stringLocalizer["NoFilesSelectedDialog.Title"],
+                    content: _stringLocalizer["NoFilesSelectedDialog.Content"],
                     buttons: [
-                        new DialogAction(_stringLocalizer["NoFilesSelected.OkButton"])
+                        new DialogAction(_stringLocalizer["Ok"])
                     ],
                     cancellation: cancellationToken);
         }
@@ -95,10 +96,10 @@ internal partial record AddItemModel
         {
             await _navigator.ShowMessageDialogAsync<string>(
                     this,
-                    title: _stringLocalizer["NoDirectorySelected.Title"],
-                    content: _stringLocalizer["NoDirectorySelected.Content"],
+                    title: _stringLocalizer["NoDirectorySelectedDialog.Title"],
+                    content: _stringLocalizer["NoDirectorySelectedDialog.Content"],
                     buttons: [
-                        new DialogAction(_stringLocalizer["NoDirectorySelected.OkButton"])
+                        new DialogAction(_stringLocalizer["Ok"])
                     ],
                     cancellation: cancellationToken);
         }
@@ -106,10 +107,10 @@ internal partial record AddItemModel
         {
             await _navigator.ShowMessageDialogAsync<string>(
                     this,
-                    title: _stringLocalizer["NoTextData.Title"],
-                    content: _stringLocalizer["NoTextData.Content"],
+                    title: _stringLocalizer["NoTextDataDialog.Title"],
+                    content: _stringLocalizer["NoTextDataDialog.Content"],
                     buttons: [
-                        new DialogAction(_stringLocalizer["NoTextData.OkButton"])
+                        new DialogAction(_stringLocalizer["Ok"])
                     ],
                     cancellation: cancellationToken);
         }
@@ -117,21 +118,21 @@ internal partial record AddItemModel
         {
             await _navigator.ShowMessageDialogAsync<string>(
                     this,
-                    title: _stringLocalizer["NoDataName.Title"],
-                    content: _stringLocalizer["NoDataName.Content"],
+                    title: _stringLocalizer["NoDataNameDialog.Title"],
+                    content: _stringLocalizer["NoDataNameDialog.Content"],
                     buttons: [
-                        new DialogAction(_stringLocalizer["NoDataName.OkButton"])
+                        new DialogAction(_stringLocalizer["Ok"])
                     ],
                     cancellation: cancellationToken);
         }
-        else if (_addItemDto.CryptoForest.GetBaseLevel().GetItems().Keys.Contains(itemName))
+        else if (_addItemDto.CryptoForest.GetBaseLevel().GetItems().ContainsKey(itemName))
         {
             await _navigator.ShowMessageDialogAsync<string>(
                     this,
-                    title: _stringLocalizer["ItemAlreadyExists.Title"],
-                    content: _stringLocalizer["ItemAlreadyExists.Content"],
+                    title: _stringLocalizer["ItemAlreadyExistsDialog.Title"],
+                    content: _stringLocalizer["ItemAlreadyExistsDialog.Content"],
                     buttons: [
-                        new DialogAction(_stringLocalizer["ItemAlreadyExists.OkButton"])
+                        new DialogAction(_stringLocalizer["Ok"])
                     ],
                     cancellation: cancellationToken);
         }
@@ -161,7 +162,7 @@ internal partial record AddItemModel
                         title: _stringLocalizer["EncryptFailureDialog.Title"],
                         content: _stringLocalizer["EncryptFailureDialog.Content"],
                         buttons: [
-                            new DialogAction(_stringLocalizer["EncryptFailureDialog.OkButton"])
+                            new DialogAction(_stringLocalizer["Ok"])
                         ],
                         cancellation: cancellationToken);
                 return;
@@ -173,21 +174,4 @@ internal partial record AddItemModel
 
     public async Task BackAsync(CancellationToken cancellationToken)
         => await _navigator.NavigateBackAsync(this, cancellation: cancellationToken);
-
-    private IImmutableList<ValueText<Guid>> CreateLevelsSource()
-    {
-        var baseLevel = _addItemDto.CryptoForest.GetBaseLevel();
-        var levels = new List<ValueText<Guid>>([new ValueText<Guid>(_stringLocalizer["BaseLevel"], baseLevel.EntryGuid)]);
-        AddLevels(baseLevel);
-
-        return [.. levels.OrderBy(l => l.Text)];
-
-        void AddLevels(LevelConfig levelConfig)
-        {
-            levelConfig.GetLevels().ForEach(l => {
-                levels.Add(new ValueText<Guid>(l.Key, l.Value.EntryGuid));
-                AddLevels(levelConfig.GetLevel(l.Value.EntryGuid));
-            });
-        }
-    }
 }

@@ -204,9 +204,6 @@
   <data name="OpenFailureDialog.Content" xml:space="preserve">
     <value>Could not open the CryptoForest. Either the password was wrong or the file is not valid or corrupted.</value>
   </data>
-  <data name="OpenFailureDialog.OkButton" xml:space="preserve">
-    <value>Ok</value>
-  </data>
   <data name="DataNameTextBox.Header" xml:space="preserve">
     <value>Data name</value>
   </data>
@@ -231,55 +228,40 @@
   <data name="EncryptFailureDialog.Title" xml:space="preserve">
     <value>Could not encrypt</value>
   </data>
-  <data name="EncryptFailureDialog.OkButton" xml:space="preserve">
-    <value>Ok</value>
-  </data>
   <data name="EncryptFailureDialog.Content" xml:space="preserve">
     <value>Failed to encrypt the data.</value>
   </data>
-  <data name="NoFilesSelected.Title" xml:space="preserve">
+  <data name="NoFilesSelectedDialog.Title" xml:space="preserve">
     <value>No file(s) selected</value>
   </data>
-  <data name="NoFilesSelected.Content" xml:space="preserve">
+  <data name="NoFilesSelectedDialog.Content" xml:space="preserve">
     <value>Please select at least one file to encrypt.</value>
   </data>
-  <data name="NoFilesSelected.OkButton" xml:space="preserve">
-    <value>Ok</value>
-  </data>
-  <data name="NoDirectorySelected.Title" xml:space="preserve">
+  <data name="NoDirectorySelectedDialog.Title" xml:space="preserve">
     <value>No directory selected</value>
   </data>
-  <data name="NoDirectorySelected.Content" xml:space="preserve">
+  <data name="NoDirectorySelectedDialog.Content" xml:space="preserve">
     <value>Please select a directory to encrypt.</value>
   </data>
-  <data name="NoDirectorySelected.OkButton" xml:space="preserve">
-    <value>Ok</value>
-  </data>
-  <data name="NoTextData.Title" xml:space="preserve">
+  <data name="NoTextDataDialog.Title" xml:space="preserve">
     <value>No text data</value>
   </data>
-  <data name="NoTextData.Content" xml:space="preserve">
+  <data name="NoTextDataDialog.Content" xml:space="preserve">
     <value>Please enter a text to encrypt.</value>
   </data>
-  <data name="NoTextData.OkButton" xml:space="preserve">
-    <value>Ok</value>
-  </data>
-  <data name="NoDataName.Title" xml:space="preserve">
+  <data name="NoDataNameDialog.Title" xml:space="preserve">
     <value>No data name</value>
   </data>
-  <data name="NoDataName.Content" xml:space="preserve">
+  <data name="NoDataNameDialog.Content" xml:space="preserve">
     <value>Please enter a data name.</value>
   </data>
-  <data name="NoDataName.OkButton" xml:space="preserve">
-    <value>Ok</value>
-  </data>
-  <data name="ItemAlreadyExists.Title" xml:space="preserve">
+  <data name="ItemAlreadyExistsDialog.Title" xml:space="preserve">
     <value>Item already exists</value>
   </data>
-  <data name="ItemAlreadyExists.Content" xml:space="preserve">
+  <data name="ItemAlreadyExistsDialog.Content" xml:space="preserve">
     <value>An item with this data name already exists. Please use another one.</value>
   </data>
-  <data name="ItemAlreadyExists.OkButton" xml:space="preserve">
+  <data name="Ok" xml:space="preserve">
     <value>Ok</value>
   </data>
 </root>

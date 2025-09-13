@@ -4,6 +4,7 @@ using CryptoForestApp.Presentation;
 using CryptoForestApp.Presentation.Dialogs;
 using CryptoForestApp.Presentation.Pages;
 using CryptoForestApp.Services.HistoryService;
+using CryptoForestApp.Services.LevelsSourceProvider;
 using CryptoForestLibrary;
 using CryptoForestLibrary.Cryptograph.Algorithm;
 
@@ -40,6 +41,7 @@ public partial class App : Application
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<IHistoryService, HistoryService>();
+                    services.AddSingleton<LevelsSourceProvider>();
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
             );

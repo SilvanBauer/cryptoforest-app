@@ -66,7 +66,7 @@ internal partial record OpenModel
                     title: _stringLocalizer["OpenFailureDialog.Title"],
                     content: _stringLocalizer["OpenFailureDialog.Content"],
                     buttons: [
-                        new DialogAction(_stringLocalizer["OpenFailureDialog.OkButton"])
+                        new DialogAction(_stringLocalizer["Ok"])
                     ],
                     cancellation: cancellationToken);
         }
