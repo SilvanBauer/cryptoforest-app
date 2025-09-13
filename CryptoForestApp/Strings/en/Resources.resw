@@ -207,4 +207,79 @@
   <data name="OpenFailureDialog.OkButton" xml:space="preserve">
     <value>Ok</value>
   </data>
+  <data name="DataNameTextBox.Header" xml:space="preserve">
+    <value>Data name</value>
+  </data>
+  <data name="LevelComboBox.Header" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="DataTextBox.Header" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="DataTextBlock.Text" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="FilesRadioButton.Content" xml:space="preserve">
+    <value>File(s)</value>
+  </data>
+  <data name="DirectoryRadioButton.Content" xml:space="preserve">
+    <value>Directory</value>
+  </data>
+  <data name="TextRadioButton.Content" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="EncryptFailureDialog.Title" xml:space="preserve">
+    <value>Could not encrypt</value>
+  </data>
+  <data name="EncryptFailureDialog.OkButton" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="EncryptFailureDialog.Content" xml:space="preserve">
+    <value>Failed to encrypt the data.</value>
+  </data>
+  <data name="NoFilesSelected.Title" xml:space="preserve">
+    <value>No file(s) selected</value>
+  </data>
+  <data name="NoFilesSelected.Content" xml:space="preserve">
+    <value>Please select at least one file to encrypt.</value>
+  </data>
+  <data name="NoFilesSelected.OkButton" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="NoDirectorySelected.Title" xml:space="preserve">
+    <value>No directory selected</value>
+  </data>
+  <data name="NoDirectorySelected.Content" xml:space="preserve">
+    <value>Please select a directory to encrypt.</value>
+  </data>
+  <data name="NoDirectorySelected.OkButton" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="NoTextData.Title" xml:space="preserve">
+    <value>No text data</value>
+  </data>
+  <data name="NoTextData.Content" xml:space="preserve">
+    <value>Please enter a text to encrypt.</value>
+  </data>
+  <data name="NoTextData.OkButton" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="NoDataName.Title" xml:space="preserve">
+    <value>No data name</value>
+  </data>
+  <data name="NoDataName.Content" xml:space="preserve">
+    <value>Please enter a data name.</value>
+  </data>
+  <data name="NoDataName.OkButton" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="ItemAlreadyExists.Title" xml:space="preserve">
+    <value>Item already exists</value>
+  </data>
+  <data name="ItemAlreadyExists.Content" xml:space="preserve">
+    <value>An item with this data name already exists. Please use another one.</value>
+  </data>
+  <data name="ItemAlreadyExists.OkButton" xml:space="preserve">
+    <value>Ok</value>
+  </data>
 </root>

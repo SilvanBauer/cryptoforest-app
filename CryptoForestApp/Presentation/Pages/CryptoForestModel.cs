@@ -8,7 +8,8 @@ internal partial record CryptoForestModel
 {
     private readonly INavigator _navigator;
     private readonly AesCryptoForest _cryptoForest;
-    private readonly LevelConfig _currentLevel;
+
+    private LevelConfig _currentLevel;
 
     public IState<KeyValuePair<string, ItemConfig>> SelectedEntry { get; set; }
     public IListState<KeyValuePair<string, ItemConfig>> Entries { get; set; }
@@ -27,6 +28,9 @@ internal partial record CryptoForestModel
         Entries = ListState.Value<CryptoForestModel, KeyValuePair<string, ItemConfig>>(this, () => [.. _currentLevel.GetLevels(), .. _currentLevel.GetItems()]);
     }
 
+    public async Task AddAsync(CancellationToken cancellationToken)
+        => await _navigator.NavigateViewModelAsync<AddItemViewModel>(this, data: new AddItemDto(_currentLevel.EntryGuid, _cryptoForest), cancellation: cancellationToken);
+
     public async Task MoveAsync(CancellationToken cancellationToken)
     {
         var entry = await SelectedEntry.Value(cancellationToken);
@@ -37,8 +41,8 @@ internal partial record CryptoForestModel
 
         await _navigator.NavigateViewModelAsync<MoveViewModel>(this, Qualifiers.Dialog, new MoveDto
             (
-                ItemGuid: entry.Value.EntryGuid,
-                CurrentLevelGuid: _currentLevel.EntryGuid,
+                entry.Value.EntryGuid,
+                _currentLevel.EntryGuid,
                 _cryptoForest,
                 CallbackAsync: Refresh
             ), cancellationToken);

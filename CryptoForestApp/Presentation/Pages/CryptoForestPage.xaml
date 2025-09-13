@@ -46,7 +46,7 @@
         </ListView>
 
         <WrapPanel Grid.Row="2" Grid.ColumnSpan="4" Orientation="Horizontal" >
-            <Button x:Uid="AddButton" Margin="5" Width="150" Command="{Binding TestPrint}" />
+            <Button x:Uid="AddButton" Margin="5" Width="150" Command="{Binding AddAsync}" />
             <Button x:Uid="DecryptButton" Margin="5" Width="150" />
             <Button x:Uid="DeleteButton" Margin="5" Width="150" />
             <Button x:Uid="MoveButton" Margin="5" Width="150" Command="{Binding MoveAsync}" />

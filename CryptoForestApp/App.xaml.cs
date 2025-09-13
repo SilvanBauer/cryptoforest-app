@@ -62,6 +62,7 @@ public partial class App : Application
             new ViewMap<HistoryPage, HistoryViewModel>(),
             new DataViewMap<OpenPage, OpenViewModel, OpenDto>(),
             new DataViewMap<CryptoForestPage, CryptoForestViewModel, CryptoForestDto>(),
+            new DataViewMap<AddItemPage, AddItemViewModel, AddItemDto>(),
 
             // Dialogs
             new DataViewMap<MoveContentDialog, MoveViewModel, MoveDto>()
@@ -75,6 +76,7 @@ public partial class App : Application
                     new ("Main", View: views.FindByViewModel<HistoryViewModel>(), IsDefault:true),
                     new ("Open", View: views.FindByViewModel<OpenViewModel>()),
                     new ("CryptoForest", View: views.FindByViewModel<CryptoForestViewModel>()),
+                    new ("AddItem", View: views.FindByViewModel<AddItemViewModel>()),
 
                     // Dialogs
                     new ("Move", View: views.FindByViewModel<MoveViewModel>())

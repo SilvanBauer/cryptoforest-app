@@ -73,5 +73,5 @@ internal partial record OpenModel
     }
 
     public Task BackAsync(CancellationToken cancellationToken)
-        => _navigator.NavigateBackAsync(cancellationToken);
+        => _navigator.NavigateBackAsync(this, cancellation: cancellationToken);
 }
