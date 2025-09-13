@@ -84,57 +84,57 @@ internal partial record AddItemModel
         if (isFilesSelected && _selectedFiles.Length == 0)
         {
             await _navigator.ShowMessageDialogAsync<string>(
-                    this,
-                    title: _stringLocalizer["NoFilesSelectedDialog.Title"],
-                    content: _stringLocalizer["NoFilesSelectedDialog.Content"],
-                    buttons: [
-                        new DialogAction(_stringLocalizer["Ok"])
-                    ],
-                    cancellation: cancellationToken);
+                this,
+                title: _stringLocalizer["NoFilesSelectedDialog.Title"],
+                content: _stringLocalizer["NoFilesSelectedDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Ok"])
+                ],
+                cancellation: cancellationToken);
         }
         else if (isDirectorySelected && string.IsNullOrWhiteSpace(selectedDirectory))
         {
             await _navigator.ShowMessageDialogAsync<string>(
-                    this,
-                    title: _stringLocalizer["NoDirectorySelectedDialog.Title"],
-                    content: _stringLocalizer["NoDirectorySelectedDialog.Content"],
-                    buttons: [
-                        new DialogAction(_stringLocalizer["Ok"])
-                    ],
-                    cancellation: cancellationToken);
+                this,
+                title: _stringLocalizer["NoDirectorySelectedDialog.Title"],
+                content: _stringLocalizer["NoDirectorySelectedDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Ok"])
+                ],
+                cancellation: cancellationToken);
         }
         else if (isTextSelected && string.IsNullOrWhiteSpace(textData))
         {
             await _navigator.ShowMessageDialogAsync<string>(
-                    this,
-                    title: _stringLocalizer["NoTextDataDialog.Title"],
-                    content: _stringLocalizer["NoTextDataDialog.Content"],
-                    buttons: [
-                        new DialogAction(_stringLocalizer["Ok"])
-                    ],
-                    cancellation: cancellationToken);
+                this,
+                title: _stringLocalizer["NoTextDataDialog.Title"],
+                content: _stringLocalizer["NoTextDataDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Ok"])
+                ],
+                cancellation: cancellationToken);
         }
         else if (string.IsNullOrWhiteSpace(itemName))
         {
             await _navigator.ShowMessageDialogAsync<string>(
-                    this,
-                    title: _stringLocalizer["NoDataNameDialog.Title"],
-                    content: _stringLocalizer["NoDataNameDialog.Content"],
-                    buttons: [
-                        new DialogAction(_stringLocalizer["Ok"])
-                    ],
-                    cancellation: cancellationToken);
+                this,
+                title: _stringLocalizer["NoDataNameDialog.Title"],
+                content: _stringLocalizer["NoDataNameDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Ok"])
+                ],
+                cancellation: cancellationToken);
         }
         else if (_addItemDto.CryptoForest.GetBaseLevel().GetItems().ContainsKey(itemName))
         {
             await _navigator.ShowMessageDialogAsync<string>(
-                    this,
-                    title: _stringLocalizer["ItemAlreadyExistsDialog.Title"],
-                    content: _stringLocalizer["ItemAlreadyExistsDialog.Content"],
-                    buttons: [
-                        new DialogAction(_stringLocalizer["Ok"])
-                    ],
-                    cancellation: cancellationToken);
+                this,
+                title: _stringLocalizer["ItemAlreadyExistsDialog.Title"],
+                content: _stringLocalizer["ItemAlreadyExistsDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Ok"])
+                ],
+                cancellation: cancellationToken);
         }
         else
         {
@@ -158,13 +158,13 @@ internal partial record AddItemModel
             catch
             {
                 await _navigator.ShowMessageDialogAsync<string>(
-                        this,
-                        title: _stringLocalizer["EncryptFailureDialog.Title"],
-                        content: _stringLocalizer["EncryptFailureDialog.Content"],
-                        buttons: [
-                            new DialogAction(_stringLocalizer["Ok"])
-                        ],
-                        cancellation: cancellationToken);
+                    this,
+                    title: _stringLocalizer["EncryptFailureDialog.Title"],
+                    content: _stringLocalizer["EncryptFailureDialog.Content"],
+                    buttons: [
+                        new DialogAction(_stringLocalizer["Ok"])
+                    ],
+                    cancellation: cancellationToken);
                 return;
             }
 

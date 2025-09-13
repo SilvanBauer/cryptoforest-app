@@ -6,6 +6,7 @@ using Microsoft.Extensions.Localization;
 namespace CryptoForestApp.Presentation.Dialogs;
 internal partial record MoveModel
 {
+    private readonly INavigator _navigator;
     private readonly IStringLocalizer _stringLocalizer;
     private readonly MoveDto _moveDto;
 
@@ -13,8 +14,9 @@ internal partial record MoveModel
     private readonly IImmutableList<ValueText<Guid>> _levels;
     public IListFeed<ValueText<Guid>> Levels => ListFeed<ValueText<Guid>>.Async(async _ => _levels);
 
-    public MoveModel(IStringLocalizer stringLocalizer, LevelsSourceProvider levelsSourceProvider, MoveDto moveDto)
+    public MoveModel(INavigator navigator, IStringLocalizer stringLocalizer, LevelsSourceProvider levelsSourceProvider, MoveDto moveDto)
     {
+        _navigator = navigator;
         _stringLocalizer = stringLocalizer;
         _moveDto = moveDto;
         _levels = levelsSourceProvider.CreateLevelsSource(_moveDto.CryptoForest);
@@ -24,8 +26,22 @@ internal partial record MoveModel
 
     public async Task MoveAsync(CancellationToken cancellationToken)
     {
-        var newLevel = _levels.ElementAt(await SelectedLevelIndex.Value(cancellationToken));
-        await _moveDto.CryptoForest.MoveItemAsync(_moveDto.ItemGuid, newLevel.Value, cancellationToken);
-        await _moveDto.CallbackAsync(cancellationToken);
+        try
+        {
+            var newLevel = _levels.ElementAt(await SelectedLevelIndex.Value(cancellationToken));
+            await _moveDto.CryptoForest.MoveItemAsync(_moveDto.ItemGuid, newLevel.Value, cancellationToken);
+            await _moveDto.CallbackAsync(cancellationToken);
+        }
+        catch
+        {
+            await _navigator.ShowMessageDialogAsync<string>(
+                this,
+                title: _stringLocalizer["MoveFailureDialog.Title"],
+                content: _stringLocalizer["MoveFailureDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Ok"])
+                ],
+                cancellation: cancellationToken);
+        }
     }
 }
