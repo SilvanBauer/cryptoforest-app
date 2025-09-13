@@ -40,8 +40,8 @@ internal partial record MoveModel
         void AddLevels(LevelConfig levelConfig)
         {
             levelConfig.GetLevels().ForEach(l => {
-                levels.Add(new ValueText<Guid>(l.Value, l.Key));
-                AddLevels(levelConfig.GetLevel(l.Key));
+                levels.Add(new ValueText<Guid>(l.Key, l.Value.EntryGuid));
+                AddLevels(levelConfig.GetLevel(l.Value.EntryGuid));
             });
         }
     }
