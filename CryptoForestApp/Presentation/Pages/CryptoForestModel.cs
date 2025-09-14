@@ -2,7 +2,10 @@ using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Presentation.Dialogs;
 using CryptoForestLibrary;
 using CryptoForestLibrary.Config;
+using CryptoForestLibrary.Cryptograph.Storage;
 using Microsoft.Extensions.Localization;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Storage.Pickers;
 
 namespace CryptoForestApp.Presentation.Pages;
 internal partial record CryptoForestModel
@@ -33,6 +36,65 @@ internal partial record CryptoForestModel
 
     public async Task AddAsync(CancellationToken cancellationToken)
         => await _navigator.NavigateViewModelAsync<AddItemViewModel>(this, data: new AddItemDto(_currentLevel.EntryGuid, _cryptoForest), cancellation: cancellationToken);
+
+    public async Task DecryptAsync(CancellationToken cancellationToken)
+    {
+        var entry = await SelectedEntry.Value(cancellationToken);
+        if (entry.Key == string.Empty || entry.Value.ItemType == ItemType.Level)
+        {
+            return;
+        }
+
+        if (entry.Value.ItemType == ItemType.Files)
+        {
+            var folderPicker = new FolderPicker();
+            StorageFolder? folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                try
+                {
+                    await _cryptoForest.GetDataItemAsync(entry.Value.EntryGuid, folder.Path, cancellationToken: cancellationToken);
+                    await _navigator.NavigateViewModelAsync<DecryptedViewModel>(this, Qualifiers.Dialog, new DecryptedDto
+                    (
+                        Text: string.Empty
+                    ), cancellationToken);
+                }
+                catch
+                {
+                    await _navigator.ShowMessageDialogAsync<string>(
+                        this,
+                        title: _stringLocalizer["DecryptionFailureDialog.Title"],
+                        content: _stringLocalizer["DecryptionFailureDialog.Content"],
+                        buttons: [
+                            new DialogAction(_stringLocalizer["Ok"])
+                        ],
+                        cancellation: cancellationToken);
+                }
+            }
+        }
+        else
+        {
+            var text = await _cryptoForest.GetTextItemAsync(entry.Value.EntryGuid, cancellationToken);
+            if (text != string.Empty)
+            {
+                await _navigator.NavigateViewModelAsync<DecryptedViewModel>(this, Qualifiers.Dialog, new DecryptedDto
+                (
+                    text
+                ), cancellationToken);
+            }
+            else
+            {
+                await _navigator.ShowMessageDialogAsync<string>(
+                    this,
+                    title: _stringLocalizer["DecryptionFailureDialog.Title"],
+                    content: _stringLocalizer["DecryptionFailureDialog.Content"],
+                    buttons: [
+                        new DialogAction(_stringLocalizer["Ok"])
+                    ],
+                    cancellation: cancellationToken);
+            }
+        }
+    }
 
     public async Task DeleteAsync(CancellationToken cancellationToken)
     {

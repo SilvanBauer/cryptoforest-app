@@ -66,7 +66,8 @@ public partial class App : Application
             new DataViewMap<AddLevelPage, AddLevelViewModel, AddLevelDto>(),
 
             // Dialogs
-            new DataViewMap<MoveContentDialog, MoveViewModel, MoveDto>()
+            new DataViewMap<MoveContentDialog, MoveViewModel, MoveDto>(),
+            new DataViewMap<DecryptedContentDialog, DecryptedViewModel, DecryptedDto>()
         );
 
         routes.Register(
@@ -81,7 +82,8 @@ public partial class App : Application
                     new ("AddLevel", View: views.FindByViewModel<AddLevelViewModel>()),
 
                     // Dialogs
-                    new ("Move", View: views.FindByViewModel<MoveViewModel>())
+                    new ("Move", View: views.FindByViewModel<MoveViewModel>()),
+                    new ("Decrypted", View: views.FindByViewModel<DecryptedViewModel>())
                 ]
             )
         );

@@ -324,4 +324,19 @@
   <data name="NewLevelAlreadyHasItemDialog.Content" xml:space="preserve">
     <value>The new level already contains an item with the same name.</value>
   </data>
+  <data name="DecryptionFailureDialog.Title" xml:space="preserve">
+    <value>Could not decrypt</value>
+  </data>
+  <data name="DecryptionFailureDialog.Content" xml:space="preserve">
+    <value>Failed to decrypt the data.</value>
+  </data>
+  <data name="DecryptedTextBlock.Text" xml:space="preserve">
+    <value>The data was successfully decrypted</value>
+  </data>
+  <data name="DecryptedDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="DecryptedDialog.Title" xml:space="preserve">
+    <value>Successfully decrypted</value>
+  </data>
 </root>
