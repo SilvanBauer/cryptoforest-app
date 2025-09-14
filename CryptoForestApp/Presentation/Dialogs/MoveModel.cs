@@ -26,23 +26,36 @@ internal partial record MoveModel
 
     public async Task MoveAsync(CancellationToken cancellationToken)
     {
-        // TODO validate that item is unique in new level
-        try
-        {
-            var newLevel = _levels.ElementAt(await SelectedLevelIndex.Value(cancellationToken));
-            await _moveDto.CryptoForest.MoveItemAsync(_moveDto.ItemGuid, newLevel.Value, cancellationToken);
-            await _moveDto.CallbackAsync(cancellationToken);
-        }
-        catch(Exception ex)
+        var newLevel = _levels.ElementAt(await SelectedLevelIndex.Value(cancellationToken));
+        if (_moveDto.CryptoForest.GetBaseLevel().GetLevel(newLevel.Value).GetItems().Any(l => l.Key == _moveDto.ItemKey))
         {
             await _navigator.ShowMessageDialogAsync<string>(
                 this,
-                title: _stringLocalizer["MoveFailureDialog.Title"],
-                content: _stringLocalizer["MoveFailureDialog.Content"],
+                title: _stringLocalizer["NewLevelAlreadyHasItemDialog.Title"],
+                content: _stringLocalizer["NewLevelAlreadyHasItemDialog.Content"],
                 buttons: [
                     new DialogAction(_stringLocalizer["Ok"])
                 ],
                 cancellation: cancellationToken);
+        }
+        else
+        {
+            try
+            {
+                await _moveDto.CryptoForest.MoveItemAsync(_moveDto.ItemGuid, newLevel.Value, cancellationToken);
+                await _moveDto.CallbackAsync(cancellationToken);
+            }
+            catch
+            {
+                await _navigator.ShowMessageDialogAsync<string>(
+                    this,
+                    title: _stringLocalizer["MoveFailureDialog.Title"],
+                    content: _stringLocalizer["MoveFailureDialog.Content"],
+                    buttons: [
+                        new DialogAction(_stringLocalizer["Ok"])
+                    ],
+                    cancellation: cancellationToken);
+            }
         }
     }
 }

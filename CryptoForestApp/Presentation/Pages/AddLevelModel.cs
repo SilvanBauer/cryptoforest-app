@@ -42,7 +42,7 @@ internal partial record AddLevelModel
                 ],
                 cancellation: cancellationToken);
         }
-        else if (_addLevelDto.CryptoForest.GetBaseLevel().GetLevels().ContainsKey(levelName))
+        else if (_addLevelDto.CryptoForest.GetBaseLevel().GetLevel(parentLevel.Value).GetLevels().ContainsKey(levelName))
         {
             await _navigator.ShowMessageDialogAsync<string>(
                 this,

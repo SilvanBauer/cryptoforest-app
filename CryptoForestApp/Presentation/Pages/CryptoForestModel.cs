@@ -42,44 +42,43 @@ internal partial record CryptoForestModel
             return;
         }
 
-        try
+        bool? deletionSuccessfull = null;
+        if (entry.Value.ItemType != ItemType.Level)
         {
-            if (entry.Value.ItemType != ItemType.Level)
+            var createResult = await _navigator.ShowMessageDialogAsync<string>(
+                this,
+                title: _stringLocalizer["DeleteConfirmationDialog.Title"],
+                content: _stringLocalizer["DeleteConfirmationDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Yes"]),
+                    new DialogAction(_stringLocalizer["No"])
+                ],
+                cancellation: cancellationToken);
+            if (createResult == _stringLocalizer["Yes"])
             {
-                var createResult = await _navigator.ShowMessageDialogAsync<string>(
-                    this,
-                    title: _stringLocalizer["DeleteConfirmationDialog.Title"],
-                    content: _stringLocalizer["DeleteConfirmationDialog.Content"],
-                    buttons: [
-                        new DialogAction(_stringLocalizer["Yes"]),
-                        new DialogAction(_stringLocalizer["No"])
-                    ],
-                    cancellation: cancellationToken);
-                if (createResult == _stringLocalizer["Yes"])
-                {
-                    await _cryptoForest.RemoveItemAsync(entry.Value.EntryGuid, cancellationToken);
-                    await RefreshAsync(cancellationToken);
-                }
-            }
-            else
-            {
-                var createResult = await _navigator.ShowMessageDialogAsync<string>(
-                    this,
-                    title: _stringLocalizer["DeleteLevelConfirmationDialog.Title"],
-                    content: _stringLocalizer["DeleteLevelConfirmationDialog.Content"],
-                    buttons: [
-                        new DialogAction(_stringLocalizer["Yes"]),
-                        new DialogAction(_stringLocalizer["No"])
-                    ],
-                    cancellation: cancellationToken);
-                if (createResult == _stringLocalizer["Yes"])
-                {
-                    await _cryptoForest.RemoveLevelAsync(entry.Value.EntryGuid, cancellationToken);
-                    await RefreshAsync(cancellationToken);
-                }
+                deletionSuccessfull = await _cryptoForest.RemoveItemAsync(entry.Value.EntryGuid, cancellationToken);
+                await RefreshAsync(cancellationToken);
             }
         }
-        catch
+        else
+        {
+            var createResult = await _navigator.ShowMessageDialogAsync<string>(
+                this,
+                title: _stringLocalizer["DeleteLevelConfirmationDialog.Title"],
+                content: _stringLocalizer["DeleteLevelConfirmationDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Yes"]),
+                    new DialogAction(_stringLocalizer["No"])
+                ],
+                cancellation: cancellationToken);
+            if (createResult == _stringLocalizer["Yes"])
+            {
+                deletionSuccessfull = await _cryptoForest.RemoveLevelAsync(entry.Value.EntryGuid, cancellationToken);
+                await RefreshAsync(cancellationToken);
+            }
+        }
+
+        if (deletionSuccessfull == false)
         {
             await _navigator.ShowMessageDialogAsync<string>(
                 this,
@@ -103,6 +102,7 @@ internal partial record CryptoForestModel
         await _navigator.NavigateViewModelAsync<MoveViewModel>(this, Qualifiers.Dialog, new MoveDto
             (
                 entry.Value.EntryGuid,
+                entry.Key,
                 _currentLevel.EntryGuid,
                 _cryptoForest,
                 CallbackAsync: RefreshAsync

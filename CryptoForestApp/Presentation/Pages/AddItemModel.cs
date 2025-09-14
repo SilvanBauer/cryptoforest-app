@@ -125,7 +125,7 @@ internal partial record AddItemModel
                 ],
                 cancellation: cancellationToken);
         }
-        else if (_addItemDto.CryptoForest.GetBaseLevel().GetItems().ContainsKey(itemName))
+        else if (_addItemDto.CryptoForest.GetBaseLevel().GetLevel(level.Value).GetItems().ContainsKey(itemName))
         {
             await _navigator.ShowMessageDialogAsync<string>(
                 this,

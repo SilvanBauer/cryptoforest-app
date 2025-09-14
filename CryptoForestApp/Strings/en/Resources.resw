@@ -318,4 +318,10 @@
   <data name="LevelAlreadyExistsDialog.Content" xml:space="preserve">
     <value>A level with this level name already exists. Please use another one.</value>
   </data>
+  <data name="NewLevelAlreadyHasItemDialog.Title" xml:space="preserve">
+    <value>New level already contains item</value>
+  </data>
+  <data name="NewLevelAlreadyHasItemDialog.Content" xml:space="preserve">
+    <value>The new level already contains an item with the same name.</value>
+  </data>
 </root>
