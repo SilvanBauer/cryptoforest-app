@@ -310,7 +310,7 @@
     <value>Are you sure?</value>
   </data>
   <data name="DeleteLevelConfirmationDialog.Content" xml:space="preserve">
-    <value>Do you really want to delete this level?</value>
+    <value>This level contains data or levels that will also be deleted. Are you sure you want to delete this level?</value>
   </data>
   <data name="LevelAlreadyExistsDialog.Title" xml:space="preserve">
     <value>Level already exists</value>

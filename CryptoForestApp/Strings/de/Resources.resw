@@ -310,7 +310,7 @@
     <value>Sind Sie sicher?</value>
   </data>
   <data name="DeleteLevelConfirmationDialog.Content" xml:space="preserve">
-    <value>Wollen Sie diese Ebene wirklich löschen?</value>
+    <value>Diese Ebene enthält noch Daten oder Ebenen, die auch gelöscht werden. Wollen Sie diese Ebene wirklich löschen?</value>
   </data>
   <data name="LevelAlreadyExistsDialog.Title" xml:space="preserve">
     <value>Ebene existiert bereits</value>

@@ -62,16 +62,23 @@ internal partial record CryptoForestModel
         }
         else
         {
-            var createResult = await _navigator.ShowMessageDialogAsync<string>(
-                this,
-                title: _stringLocalizer["DeleteLevelConfirmationDialog.Title"],
-                content: _stringLocalizer["DeleteLevelConfirmationDialog.Content"],
-                buttons: [
-                    new DialogAction(_stringLocalizer["Yes"]),
+            var shouldDelete = true;
+            var levelConfig = (LevelConfig)entry.Value;
+            if (levelConfig.GetItems().Count > 0 || levelConfig.GetLevels().Count > 0)
+            {
+                var createResult = await _navigator.ShowMessageDialogAsync<string>(
+                    this,
+                    title: _stringLocalizer["DeleteLevelConfirmationDialog.Title"],
+                    content: _stringLocalizer["DeleteLevelConfirmationDialog.Content"],
+                    buttons: [
+                        new DialogAction(_stringLocalizer["Yes"]),
                     new DialogAction(_stringLocalizer["No"])
-                ],
-                cancellation: cancellationToken);
-            if (createResult == _stringLocalizer["Yes"])
+                    ],
+                    cancellation: cancellationToken);
+                shouldDelete = createResult == _stringLocalizer["Yes"];
+            }
+
+            if (shouldDelete)
             {
                 deletionSuccessfull = await _cryptoForest.RemoveLevelAsync(entry.Value.EntryGuid, cancellationToken);
                 await RefreshAsync(cancellationToken);
