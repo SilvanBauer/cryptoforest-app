@@ -339,4 +339,7 @@
   <data name="DecryptedDialog.Title" xml:space="preserve">
     <value>Successfully decrypted</value>
   </data>
+  <data name="SearchButton.Content" xml:space="preserve">
+    <value>Search</value>
+  </data>
 </root>

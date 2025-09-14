@@ -20,6 +20,8 @@ internal partial record CryptoForestModel
     public IState<bool> IsBackPossible { get; set; }
     public IState<bool> IsForwardPossible { get; set; }
 
+    public IState<string> SearchQuery { get; set; }
+
     public IState<KeyValuePair<string, ItemConfig>> SelectedEntry { get; set; }
     public IListState<KeyValuePair<string, ItemConfig>> Entries { get; set; }
     
@@ -36,6 +38,7 @@ internal partial record CryptoForestModel
 
         IsBackPossible = State.Value(this, () => _index != 0);
         IsForwardPossible = State.Value(this, () => _index + 1 != _levelHistory.Count);
+        SearchQuery = State.Value(this, () => _levelHistory[_index].SearchQuery);
         SelectedEntry = State.Value(this, () =>
             new Dictionary<string, ItemConfig>()
             {
@@ -48,8 +51,9 @@ internal partial record CryptoForestModel
     {
         _index--;
         _currentLevel = _levelHistory[_index].LevelConfig;
-        await IsBackPossible.Update(_ => _index != 0, cancellationToken);
-        await IsForwardPossible.Update(_ => true, cancellationToken);
+        await IsBackPossible.UpdateAsync(_ => _index != 0, cancellationToken);
+        await IsForwardPossible.UpdateAsync(_ => true, cancellationToken);
+        await SearchQuery.UpdateAsync(_ => _levelHistory[_index].SearchQuery, cancellationToken);
         await RefreshAsync(cancellationToken);
     }
 
@@ -57,8 +61,22 @@ internal partial record CryptoForestModel
     {
         _index++;
         _currentLevel = _levelHistory[_index].LevelConfig;
-        await IsBackPossible.Update(_ => true, cancellationToken);
-        await IsForwardPossible.Update(_ => _index + 1 != _levelHistory.Count, cancellationToken);
+        await IsBackPossible.UpdateAsync(_ => true, cancellationToken);
+        await IsForwardPossible.UpdateAsync(_ => _index + 1 != _levelHistory.Count, cancellationToken);
+        await SearchQuery.UpdateAsync(_ => _levelHistory[_index].SearchQuery, cancellationToken);
+        await RefreshAsync(cancellationToken);
+    }
+
+    public async Task SearchAsync(CancellationToken cancellationToken)
+    {
+        await AddToHistoryAsync(_cryptoForest.GetBaseLevel(), searchQuery: await SearchQuery.Value(cancellationToken), cancellationToken);
+        await RefreshAsync(cancellationToken);
+    }
+
+    public async Task ResetAsync(CancellationToken cancellationToken)
+    {
+        await AddToHistoryAsync(_cryptoForest.GetBaseLevel(), searchQuery: string.Empty, cancellationToken);
+        await SearchQuery.UpdateAsync(_ => _levelHistory[_index].SearchQuery, cancellationToken);
         await RefreshAsync(cancellationToken);
     }
 
@@ -68,8 +86,9 @@ internal partial record CryptoForestModel
         if (selectedEntry.Value.ItemType == ItemType.Level)
         {
             await AddToHistoryAsync((LevelConfig)selectedEntry.Value, searchQuery: string.Empty, cancellationToken);
-            await IsBackPossible.Update(_ => true, cancellationToken);
-            await IsForwardPossible.Update(_ => false, cancellationToken);
+            await IsBackPossible.UpdateAsync(_ => true, cancellationToken);
+            await IsForwardPossible.UpdateAsync(_ => false, cancellationToken);
+            await SearchQuery.UpdateAsync(_ => string.Empty, cancellationToken);
             await RefreshAsync(cancellationToken);
         }
     }
@@ -222,7 +241,25 @@ internal partial record CryptoForestModel
         => await _navigator.NavigateViewModelAsync<AddLevelViewModel>(this, data: new AddLevelDto(_currentLevel.EntryGuid, _cryptoForest), cancellation: cancellationToken);
 
     private async Task RefreshAsync(CancellationToken cancellationToken)
-        => await Entries.UpdateAsync((_) => [.. _currentLevel.GetLevels(), .. _currentLevel.GetItems()], cancellationToken);
+    {
+        var levelHistory = _levelHistory[_index];
+        if (string.IsNullOrEmpty(levelHistory.SearchQuery))
+        {
+            await Entries.UpdateAsync(_ => [.. _currentLevel.GetLevels(), .. _currentLevel.GetItems()], cancellationToken);
+        }
+        else
+        {
+            try
+            {
+                var entries = levelHistory.LevelConfig.SearchItems(levelHistory.SearchQuery);
+                await Entries.UpdateAsync(_ => [.. entries], cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
 
     private async Task AddToHistoryAsync(LevelConfig levelConfig, string searchQuery, CancellationToken cancellationToken)
     {
@@ -230,14 +267,14 @@ internal partial record CryptoForestModel
         _index++;
         if (_levelHistory.Count > _index)
         {
-            for (var i = _index; i < _levelHistory.Count; i++)
+            for (var i = _levelHistory.Count - 1; i >= _index; i--)
             {
                 _levelHistory.RemoveAt(i);
             }
         }
 
         _levelHistory.Add(new LevelHistory(levelConfig, searchQuery));
-        await IsBackPossible.Update(_ => true, cancellationToken);
-        await IsForwardPossible.Update(_ => false, cancellationToken);
+        await IsBackPossible.UpdateAsync(_ => true, cancellationToken);
+        await IsForwardPossible.UpdateAsync(_ => false, cancellationToken);
     }
 }
