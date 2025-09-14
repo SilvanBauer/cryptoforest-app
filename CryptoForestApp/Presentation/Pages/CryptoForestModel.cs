@@ -1,10 +1,9 @@
+using CryptoForestApp.Models;
 using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Presentation.Dialogs;
 using CryptoForestLibrary;
 using CryptoForestLibrary.Config;
-using CryptoForestLibrary.Cryptograph.Storage;
 using Microsoft.Extensions.Localization;
-using Microsoft.UI.Xaml.Controls;
 using Windows.Storage.Pickers;
 
 namespace CryptoForestApp.Presentation.Pages;
@@ -14,7 +13,12 @@ internal partial record CryptoForestModel
     private readonly IStringLocalizer _stringLocalizer;
     private readonly AesCryptoForest _cryptoForest;
 
-    private LevelConfig _currentLevel;
+    private static LevelConfig _currentLevel;
+    private static List<LevelHistory> _levelHistory;
+    private static int _index;
+
+    public IState<bool> IsBackPossible { get; set; }
+    public IState<bool> IsForwardPossible { get; set; }
 
     public IState<KeyValuePair<string, ItemConfig>> SelectedEntry { get; set; }
     public IListState<KeyValuePair<string, ItemConfig>> Entries { get; set; }
@@ -24,8 +28,14 @@ internal partial record CryptoForestModel
         _navigator = navigator;
         _stringLocalizer = stringLocalizer;
         _cryptoForest = cryptoForestDto.CryptoForest;
-        _currentLevel = _cryptoForest.GetBaseLevel();
+        if (_currentLevel == null)
+        {
+            _currentLevel = _cryptoForest.GetBaseLevel();
+            _levelHistory = [new LevelHistory(_currentLevel, string.Empty)];
+        }
 
+        IsBackPossible = State.Value(this, () => _index != 0);
+        IsForwardPossible = State.Value(this, () => _index + 1 != _levelHistory.Count);
         SelectedEntry = State.Value(this, () =>
             new Dictionary<string, ItemConfig>()
             {
@@ -34,13 +44,43 @@ internal partial record CryptoForestModel
         Entries = ListState.Value<CryptoForestModel, KeyValuePair<string, ItemConfig>>(this, () => [.. _currentLevel.GetLevels(), .. _currentLevel.GetItems()]);
     }
 
+    public async Task GoBackAsync(CancellationToken cancellationToken)
+    {
+        _index--;
+        _currentLevel = _levelHistory[_index].LevelConfig;
+        await IsBackPossible.Update(_ => _index != 0, cancellationToken);
+        await IsForwardPossible.Update(_ => true, cancellationToken);
+        await RefreshAsync(cancellationToken);
+    }
+
+    public async Task GoForwardAsync(CancellationToken cancellationToken)
+    {
+        _index++;
+        _currentLevel = _levelHistory[_index].LevelConfig;
+        await IsBackPossible.Update(_ => true, cancellationToken);
+        await IsForwardPossible.Update(_ => _index + 1 != _levelHistory.Count, cancellationToken);
+        await RefreshAsync(cancellationToken);
+    }
+
+    public async Task OpenAsync(CancellationToken cancellationToken)
+    {
+        var selectedEntry = await SelectedEntry.Value(cancellationToken);
+        if (selectedEntry.Value.ItemType == ItemType.Level)
+        {
+            await AddToHistoryAsync((LevelConfig)selectedEntry.Value, searchQuery: string.Empty, cancellationToken);
+            await IsBackPossible.Update(_ => true, cancellationToken);
+            await IsForwardPossible.Update(_ => false, cancellationToken);
+            await RefreshAsync(cancellationToken);
+        }
+    }
+
     public async Task AddAsync(CancellationToken cancellationToken)
         => await _navigator.NavigateViewModelAsync<AddItemViewModel>(this, data: new AddItemDto(_currentLevel.EntryGuid, _cryptoForest), cancellation: cancellationToken);
 
     public async Task DecryptAsync(CancellationToken cancellationToken)
     {
         var entry = await SelectedEntry.Value(cancellationToken);
-        if (entry.Key == string.Empty || entry.Value.ItemType == ItemType.Level)
+        if (string.IsNullOrEmpty(entry.Key) || entry.Value.ItemType == ItemType.Level)
         {
             return;
         }
@@ -99,7 +139,7 @@ internal partial record CryptoForestModel
     public async Task DeleteAsync(CancellationToken cancellationToken)
     {
         var entry = await SelectedEntry.Value(cancellationToken);
-        if (entry.Key == string.Empty)
+        if (string.IsNullOrEmpty(entry.Key))
         {
             return;
         }
@@ -163,7 +203,7 @@ internal partial record CryptoForestModel
     public async Task MoveAsync(CancellationToken cancellationToken)
     {
         var entry = await SelectedEntry.Value(cancellationToken);
-        if (entry.Key == string.Empty || entry.Value.ItemType == ItemType.Level)
+        if (string.IsNullOrEmpty(entry.Key) || entry.Value.ItemType == ItemType.Level)
         {
             return;
         }
@@ -183,4 +223,21 @@ internal partial record CryptoForestModel
 
     private async Task RefreshAsync(CancellationToken cancellationToken)
         => await Entries.UpdateAsync((_) => [.. _currentLevel.GetLevels(), .. _currentLevel.GetItems()], cancellationToken);
+
+    private async Task AddToHistoryAsync(LevelConfig levelConfig, string searchQuery, CancellationToken cancellationToken)
+    {
+        _currentLevel = levelConfig;
+        _index++;
+        if (_levelHistory.Count > _index)
+        {
+            for (var i = _index; i < _levelHistory.Count; i++)
+            {
+                _levelHistory.RemoveAt(i);
+            }
+        }
+
+        _levelHistory.Add(new LevelHistory(levelConfig, searchQuery));
+        await IsBackPossible.Update(_ => true, cancellationToken);
+        await IsForwardPossible.Update(_ => false, cancellationToken);
+    }
 }
