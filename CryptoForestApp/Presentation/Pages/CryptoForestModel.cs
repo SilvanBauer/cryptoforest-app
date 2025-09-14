@@ -42,9 +42,9 @@ internal partial record CryptoForestModel
             return;
         }
 
-        if (entry.Value.ItemType != ItemType.Level)
+        try
         {
-            try
+            if (entry.Value.ItemType != ItemType.Level)
             {
                 var createResult = await _navigator.ShowMessageDialogAsync<string>(
                     this,
@@ -61,28 +61,41 @@ internal partial record CryptoForestModel
                     await RefreshAsync(cancellationToken);
                 }
             }
-            catch
+            else
             {
-                await _navigator.ShowMessageDialogAsync<string>(
+                var createResult = await _navigator.ShowMessageDialogAsync<string>(
                     this,
-                    title: _stringLocalizer["DeleteFailureDialog.Title"],
-                    content: _stringLocalizer["DeleteFailureDialog.Content"],
+                    title: _stringLocalizer["DeleteLevelConfirmationDialog.Title"],
+                    content: _stringLocalizer["DeleteLevelConfirmationDialog.Content"],
                     buttons: [
-                        new DialogAction(_stringLocalizer["Ok"])
+                        new DialogAction(_stringLocalizer["Yes"]),
+                        new DialogAction(_stringLocalizer["No"])
                     ],
                     cancellation: cancellationToken);
+                if (createResult == _stringLocalizer["Yes"])
+                {
+                    await _cryptoForest.RemoveLevelAsync(entry.Value.EntryGuid, cancellationToken);
+                    await RefreshAsync(cancellationToken);
+                }
             }
         }
-        else
+        catch
         {
-            // TODO
+            await _navigator.ShowMessageDialogAsync<string>(
+                this,
+                title: _stringLocalizer["DeleteFailureDialog.Title"],
+                content: _stringLocalizer["DeleteFailureDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Ok"])
+                ],
+                cancellation: cancellationToken);
         }
     }
 
     public async Task MoveAsync(CancellationToken cancellationToken)
     {
         var entry = await SelectedEntry.Value(cancellationToken);
-        if (entry.Key == string.Empty)
+        if (entry.Key == string.Empty || entry.Value.ItemType == ItemType.Level)
         {
             return;
         }
@@ -95,6 +108,9 @@ internal partial record CryptoForestModel
                 CallbackAsync: RefreshAsync
             ), cancellationToken);
     }
+
+    public async Task AddLevelAsync(CancellationToken cancellationToken)
+        => await _navigator.NavigateViewModelAsync<AddLevelViewModel>(this, data: new AddLevelDto(_currentLevel.EntryGuid, _cryptoForest), cancellation: cancellationToken);
 
     private async Task RefreshAsync(CancellationToken cancellationToken)
         => await Entries.UpdateAsync((_) => [.. _currentLevel.GetLevels(), .. _currentLevel.GetItems()], cancellationToken);

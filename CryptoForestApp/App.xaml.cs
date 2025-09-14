@@ -5,8 +5,6 @@ using CryptoForestApp.Presentation.Dialogs;
 using CryptoForestApp.Presentation.Pages;
 using CryptoForestApp.Services.HistoryService;
 using CryptoForestApp.Services.LevelsSourceProvider;
-using CryptoForestLibrary;
-using CryptoForestLibrary.Cryptograph.Algorithm;
 
 namespace CryptoForestApp;
 public partial class App : Application
@@ -65,6 +63,7 @@ public partial class App : Application
             new DataViewMap<OpenPage, OpenViewModel, OpenDto>(),
             new DataViewMap<CryptoForestPage, CryptoForestViewModel, CryptoForestDto>(),
             new DataViewMap<AddItemPage, AddItemViewModel, AddItemDto>(),
+            new DataViewMap<AddLevelPage, AddLevelViewModel, AddLevelDto>(),
 
             // Dialogs
             new DataViewMap<MoveContentDialog, MoveViewModel, MoveDto>()
@@ -79,6 +78,7 @@ public partial class App : Application
                     new ("Open", View: views.FindByViewModel<OpenViewModel>()),
                     new ("CryptoForest", View: views.FindByViewModel<CryptoForestViewModel>()),
                     new ("AddItem", View: views.FindByViewModel<AddItemViewModel>()),
+                    new ("AddLevel", View: views.FindByViewModel<AddLevelViewModel>()),
 
                     // Dialogs
                     new ("Move", View: views.FindByViewModel<MoveViewModel>())

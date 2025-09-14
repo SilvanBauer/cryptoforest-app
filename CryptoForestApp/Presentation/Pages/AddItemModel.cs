@@ -138,24 +138,27 @@ internal partial record AddItemModel
         }
         else
         {
-            try
+            Guid itemGuid;
+            if (isFilesSelected)
             {
-                if (isFilesSelected)
-                {
-                    var fileSearch = new FileSearch(_selectedFiles);
-                    await _addItemDto.CryptoForest.AddItemAsync(fileSearch, itemName, level.Value, cancellationToken);
-                }
-                else if (isDirectorySelected)
-                {
-                    var fileSearch = new FileSearch(selectedDirectory);
-                    await _addItemDto.CryptoForest.AddItemAsync(fileSearch, itemName, level.Value, cancellationToken);
-                }
-                else
-                {
-                    await _addItemDto.CryptoForest.AddItemAsync(textData, itemName, level.Value, cancellationToken);
-                }
+                var fileSearch = new FileSearch(_selectedFiles);
+                itemGuid = await _addItemDto.CryptoForest.AddItemAsync(fileSearch, itemName, level.Value, cancellationToken);
             }
-            catch
+            else if (isDirectorySelected)
+            {
+                var fileSearch = new FileSearch(selectedDirectory);
+                itemGuid = await _addItemDto.CryptoForest.AddItemAsync(fileSearch, itemName, level.Value, cancellationToken);
+            }
+            else
+            {
+                itemGuid = await _addItemDto.CryptoForest.AddItemAsync(textData, itemName, level.Value, cancellationToken);
+            }
+
+            if (itemGuid != Guid.Empty)
+            {
+                await BackAsync(cancellationToken);
+            }
+            else
             {
                 await _navigator.ShowMessageDialogAsync<string>(
                     this,
@@ -165,10 +168,7 @@ internal partial record AddItemModel
                         new DialogAction(_stringLocalizer["Ok"])
                     ],
                     cancellation: cancellationToken);
-                return;
             }
-
-            await _navigator.NavigateBackAsync(this, cancellation: cancellationToken);
         }
     }
 

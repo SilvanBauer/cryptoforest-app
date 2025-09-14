@@ -202,7 +202,7 @@
     <value>Öffnen fehlgeschlagen</value>
   </data>
   <data name="OpenFailureDialog.Content" xml:space="preserve">
-    <value>Der CryptoForest konnte nicht geöffnet werden. Entweder was das Passwort falsch oder die Datei ist ungültig oder korrupt.</value>
+    <value>Der CryptoForest konnte nicht geöffnet werden. Entweder war das Passwort falsch oder die Datei ist ungültig oder korrupt.</value>
   </data>
   <data name="DataNameTextBox.Header" xml:space="preserve">
     <value>Datenname</value>
@@ -287,5 +287,35 @@
   </data>
   <data name="MoveFailureDialog.Content" xml:space="preserve">
     <value>Das Verschieben der Daten ist fehlgeschlagen.</value>
+  </data>
+  <data name="LevelNameTextBox.Header" xml:space="preserve">
+    <value>Ebenen Name</value>
+  </data>
+  <data name="NoLevelNameDialog.Title" xml:space="preserve">
+    <value>Keinen Ebenennamen</value>
+  </data>
+  <data name="NoLevelNameDialog.Content" xml:space="preserve">
+    <value>Bitte geben Sie einen Ebenennamen ein.</value>
+  </data>
+  <data name="ParentLevelComboBox.Header" xml:space="preserve">
+    <value>Obere Ebene</value>
+  </data>
+  <data name="AddLevelFalureDialog.Title" xml:space="preserve">
+    <value>Erstellen der Ebene fehlgeschlagen</value>
+  </data>
+  <data name="AddLevelFalureDialog.Content" xml:space="preserve">
+    <value>Die neue Ebene konnte nicht erstellt werden.</value>
+  </data>
+  <data name="DeleteLevelConfirmationDialog.Title" xml:space="preserve">
+    <value>Sind Sie sicher?</value>
+  </data>
+  <data name="DeleteLevelConfirmationDialog.Content" xml:space="preserve">
+    <value>Wollen Sie diese Ebene wirklich lösche?</value>
+  </data>
+  <data name="LevelAlreadyExistsDialog.Title" xml:space="preserve">
+    <value>Ebene existiert bereits</value>
+  </data>
+  <data name="LevelAlreadyExistsDialog.Content" xml:space="preserve">
+    <value>Eine Ebene mit diesem Ebenen Namen existiert bereits. Bitte wählen Sie einen anderen.</value>
   </data>
 </root>

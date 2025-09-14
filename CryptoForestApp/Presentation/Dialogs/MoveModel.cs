@@ -26,13 +26,14 @@ internal partial record MoveModel
 
     public async Task MoveAsync(CancellationToken cancellationToken)
     {
+        // TODO validate that item is unique in new level
         try
         {
             var newLevel = _levels.ElementAt(await SelectedLevelIndex.Value(cancellationToken));
             await _moveDto.CryptoForest.MoveItemAsync(_moveDto.ItemGuid, newLevel.Value, cancellationToken);
             await _moveDto.CallbackAsync(cancellationToken);
         }
-        catch
+        catch(Exception ex)
         {
             await _navigator.ShowMessageDialogAsync<string>(
                 this,
