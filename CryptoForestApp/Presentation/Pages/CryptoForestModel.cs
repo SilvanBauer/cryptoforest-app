@@ -44,12 +44,14 @@ internal partial record CryptoForestModel
             {
                 { string.Empty, new ItemConfig(Guid.Empty, KeyIV.Empty, ItemType.Level) }
             }.FirstOrDefault());
+        // Creates the back entry if there the current history item is not a search query or the base level
         var backEntry = new Dictionary<string, ItemConfig>();
         if (_currentLevel.EntryGuid != _cryptoForest.GetBaseLevel().EntryGuid && _levelHistory[_index - 1].SearchQuery == string.Empty)
         {
             backEntry.Add("..", new ItemConfig(Guid.Empty, KeyIV.Empty, ItemType.Level));
         }
 
+        // Combines the backEntry, the current levels and items of the _currentLevel
         Entries = ListState.Value<CryptoForestModel, KeyValuePair<string, ItemConfig>>(this, () => [.. backEntry, .. _currentLevel.GetLevels(), .. _currentLevel.GetItems()]);
     }
 
@@ -91,6 +93,7 @@ internal partial record CryptoForestModel
         var selectedEntry = await SelectedEntry.Value(cancellationToken);        
         if (selectedEntry.Value.ItemType == ItemType.Level)
         {
+            // If the guid is empty then the .. item was clicked so the parent of the _currentLevel should be opened
             if (selectedEntry.Value.EntryGuid == Guid.Empty)
             {
                 var parentLevel = _cryptoForest.GetBaseLevel().GetLevelOfLevel(_currentLevel.EntryGuid);
@@ -128,10 +131,7 @@ internal partial record CryptoForestModel
                 try
                 {
                     await _cryptoForest.GetDataItemAsync(entry.Value.EntryGuid, folder.Path, cancellationToken: cancellationToken);
-                    await _navigator.NavigateViewModelAsync<DecryptedViewModel>(this, Qualifiers.Dialog, new DecryptedDto
-                    (
-                        Text: string.Empty
-                    ), cancellationToken);
+                    await _navigator.NavigateViewModelAsync<DecryptedViewModel>(this, Qualifiers.Dialog, new DecryptedDto(Text: string.Empty), cancellationToken);
                 }
                 catch
                 {
@@ -151,10 +151,7 @@ internal partial record CryptoForestModel
             var text = await _cryptoForest.GetTextItemAsync(entry.Value.EntryGuid, cancellationToken);
             if (text != string.Empty)
             {
-                await _navigator.NavigateViewModelAsync<DecryptedViewModel>(this, Qualifiers.Dialog, new DecryptedDto
-                (
-                    text
-                ), cancellationToken);
+                await _navigator.NavigateViewModelAsync<DecryptedViewModel>(this, Qualifiers.Dialog, new DecryptedDto(text), cancellationToken);
             }
             else
             {
@@ -269,6 +266,7 @@ internal partial record CryptoForestModel
         var levelHistory = _levelHistory[_index];
         if (string.IsNullOrEmpty(levelHistory.SearchQuery))
         {
+            // Displays the back entry (if applicable), the levels and the items of the _currentLevel if no search query was entered
             var backEntry = new Dictionary<string, ItemConfig>();
             if (_currentLevel.EntryGuid != _cryptoForest.GetBaseLevel().EntryGuid)
             {
@@ -279,15 +277,9 @@ internal partial record CryptoForestModel
         }
         else
         {
-            try
-            {
-                var entries = levelHistory.LevelConfig.SearchItems(levelHistory.SearchQuery);
-                await Entries.UpdateAsync(_ => [.. entries], cancellationToken);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            // Performs a search of the whole level and item structure and displays the found entries without a back entry
+            var entries = levelHistory.LevelConfig.SearchItems(levelHistory.SearchQuery);
+            await Entries.UpdateAsync(_ => [.. entries], cancellationToken);
         }
     }
 
@@ -295,6 +287,8 @@ internal partial record CryptoForestModel
     {
         _currentLevel = levelConfig;
         _index++;
+
+        // If the action in the history was performed not a the lates index all history actions after this action should be deleted
         if (_levelHistory.Count > _index)
         {
             for (var i = _levelHistory.Count - 1; i >= _index; i--)

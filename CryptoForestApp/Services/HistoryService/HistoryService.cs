@@ -10,7 +10,7 @@ internal class HistoryService : IHistoryService
 
     private void LoadHistory()
     {
-        _history = [];
+        // Load the history from the application local settings
         ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         var historyLength = localSettings.Values["HistoryLength"] as int?;
         if (historyLength != null)
@@ -24,6 +24,7 @@ internal class HistoryService : IHistoryService
 
     private void SaveHistory()
     {
+        // Save the history from the application local settings
         ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         localSettings.Values["HistoryLength"] = _history.Count;
         for (var i = 0; i < _history.Count; i++)
@@ -37,6 +38,7 @@ internal class HistoryService : IHistoryService
 
     public void Add(string path)
     {
+        // Removes the existing path if exists and insterts it again at the top of the history to ensure a correct order of the history
         _history.Remove(path);
         _history.Insert(0, path);
         SaveHistory();

@@ -138,6 +138,7 @@ internal partial record AddItemModel
         }
         else
         {
+            // Add item
             Guid itemGuid;
             if (isFilesSelected)
             {
@@ -154,6 +155,7 @@ internal partial record AddItemModel
                 itemGuid = await _addItemDto.CryptoForest.AddItemAsync(textData, itemName, level.Value, cancellationToken);
             }
 
+            // Handle result
             if (itemGuid != Guid.Empty)
             {
                 await BackAsync(cancellationToken);

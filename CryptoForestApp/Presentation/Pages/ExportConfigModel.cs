@@ -71,10 +71,15 @@ internal partial record ExportConfigModel
 
     public async Task ExportAsync(CancellationToken cancellationToken)
     {
+        // Get all selected levels including all parents
         var levelSelection = GetFullLevelSelection();
+
+        // Create 32 byte SHA256 hash key from password
         var password = (await Password.Value(cancellationToken))!;
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         var hashBytes = SHA256.HashData(passwordBytes);
+
+        // Handle errors and export the config
         if (!levelSelection.Any())
         {
             await _navigator.ShowMessageDialogAsync<string>(
@@ -133,11 +138,13 @@ internal partial record ExportConfigModel
 
         void AddLevels(LevelGuids level)
         {
+            // Add level if not already added with the recursion
             if (!levelGuids.Contains(level.LevelGuid))
             {
                 levelGuids.Add(level.LevelGuid);
             }
 
+            // Recursive call to add all parents of the current level
             if (level.Parent != null)
             {
                 AddLevels(level.Parent);

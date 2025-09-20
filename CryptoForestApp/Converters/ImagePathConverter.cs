@@ -1,8 +1,11 @@
 using CryptoForestLibrary.Config;
 using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace CryptoForestApp.Converters;
+
+/// <summary>
+/// A XAML value binding convertor used to convert an ItemConfig to their appropriate icon iamge path
+/// </summary>
 internal class ImagePathConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
@@ -21,16 +24,6 @@ internal class ImagePathConverter : IValueConverter
         }
 
         return string.Empty;
-    }
-
-    // TODO check if RAM issues due to loading the same image multiple times occurs with default image implementation as WPF had this issue
-    private BitmapImage GetImage(string imagePath)
-    {
-        using var stream = File.OpenRead($"./Assets/{imagePath}");
-        var bmp = new BitmapImage();
-        bmp.SetSource(stream);
-
-        return bmp;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language)

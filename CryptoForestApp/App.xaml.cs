@@ -55,6 +55,8 @@ public partial class App : Application
         MainWindow.UseStudio();
 #endif
         MainWindow.SetWindowIcon();
+
+        // Handle not exported levels
         MainWindow.AppWindow.Closing += (_, e) =>
         {
             if (UnexportedLevels.Any())
