@@ -342,4 +342,12 @@
   <data name="SearchButton.Content" xml:space="preserve">
     <value>Suchen</value>
   </data>
+  <data name="NotExportedDialog.Content" xml:space="preserve">
+    <value>Einige Änderungen an der Ebenen Struktur wurden noch nicht exportiert. Daten könnten verloren gehen.
+
+Wollen Sie wirklich CrypotForest beenden?</value>
+  </data>
+  <data name="NotExportedDialog.Title" xml:space="preserve">
+    <value>Nicht exportierte Änderungen</value>
+  </data>
 </root>

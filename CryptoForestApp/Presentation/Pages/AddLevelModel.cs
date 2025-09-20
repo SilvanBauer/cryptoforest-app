@@ -58,6 +58,7 @@ internal partial record AddLevelModel
             var levelGuid = await _addLevelDto.CryptoForest.AddLevelAsync(levelName, parentLevel.Value, cancellationToken);
             if (levelGuid != Guid.Empty)
             {
+                (Application.Current as App)!.UnexportedLevels.Add(levelGuid);
                 await BackAsync(cancellationToken);
             }
             else

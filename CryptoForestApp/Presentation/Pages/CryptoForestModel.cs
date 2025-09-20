@@ -203,6 +203,11 @@ internal partial record CryptoForestModel
             {
                 deletionSuccessfull = await _cryptoForest.RemoveLevelAsync(entry.Value.EntryGuid, cancellationToken);
                 await RefreshAsync(cancellationToken);
+
+                if (deletionSuccessfull == true)
+                {
+                    (Application.Current as App)!.UnexportedLevels.Remove(entry.Value.EntryGuid);
+                }
             }
         }
 

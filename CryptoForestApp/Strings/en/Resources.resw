@@ -342,4 +342,12 @@
   <data name="SearchButton.Content" xml:space="preserve">
     <value>Search</value>
   </data>
+  <data name="NotExportedDialog.Content" xml:space="preserve">
+    <value>Some changes on the level structure were not yet exported. Data could be lost.
+
+Are you sure you want to close the CryptoForest?</value>
+  </data>
+  <data name="NotExportedDialog.Title" xml:space="preserve">
+    <value>Not exported changes</value>
+  </data>
 </root>

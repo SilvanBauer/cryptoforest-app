@@ -1,3 +1,4 @@
+using System.Threading;
 using CryptoForestApp.Models;
 using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Presentation;
@@ -5,6 +6,8 @@ using CryptoForestApp.Presentation.Dialogs;
 using CryptoForestApp.Presentation.Pages;
 using CryptoForestApp.Services.HistoryService;
 using CryptoForestApp.Services.LevelsSourceProvider;
+using Microsoft.UI.Dispatching;
+using Windows.UI.Popups;
 
 namespace CryptoForestApp;
 public partial class App : Application
@@ -16,11 +19,17 @@ public partial class App : Application
     public App()
     {
         this.InitializeComponent();
+
+        UnexportedLevels = [];
     }
 
     // Workaround: Changed to internal to be able to close main window from code
     internal Window? MainWindow { get; private set; }
-    protected IHost? Host { get; private set; }
+    // Workaround: Changed to internal to be able to get services myself
+    internal IHost? Host { get; private set; }
+
+    internal List<Guid> UnexportedLevels { get; private set; }
+    internal Action? DisplayExportDialog { get; set; }
 
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
@@ -49,6 +58,14 @@ public partial class App : Application
         MainWindow.UseStudio();
 #endif
         MainWindow.SetWindowIcon();
+        MainWindow.AppWindow.Closing += (_, e) =>
+        {
+            if (UnexportedLevels.Any())
+            {
+                DisplayExportDialog?.Invoke();
+                e.Cancel = true;
+            }
+        };
 
         Host = await builder.NavigateAsync<Shell>();
     }
