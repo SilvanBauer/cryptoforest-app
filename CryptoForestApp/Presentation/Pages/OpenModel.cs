@@ -53,7 +53,7 @@ internal partial record OpenModel
             var storage = new CryptoForestFileStorage(_openDto.Path);
             var cryptoForest = new AesCryptoForest(storage, hashBytes, (await SelectedFile.Value(cancellationToken))!);
             _historyService.Add(_openDto.Path);
-            await _navigator.NavigateViewAsync<CryptoForestViewModel>(this, data: new CryptoForestDto(cryptoForest), cancellation: cancellationToken);
+            await _navigator.NavigateViewModelAsync<CryptoForestViewModel>(this, data: new CryptoForestDto(cryptoForest), cancellation: cancellationToken);
         }
         catch
         {

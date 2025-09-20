@@ -10,13 +10,26 @@ internal class HistoryService : IHistoryService
 
     private void LoadHistory()
     {
-        _history = ["TestValue 1", "TestValue 2", "TestValue 3"];
-        // TODO implement
+        _history = [];
+        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        var historyLength = localSettings.Values["HistoryLength"] as int?;
+        if (historyLength != null)
+        {
+            for (var i = 0; i < historyLength; i++)
+            {
+                _history.Add((localSettings.Values[$"History{i}"] as string)!);
+            }
+        }
     }
 
     private void SaveHistory()
     {
-        // TODO implement
+        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        localSettings.Values["HistoryLength"] = _history.Count;
+        for (var i = 0; i < _history.Count; i++)
+        {
+            localSettings.Values[$"History{i}"] = _history[i];
+        }
     }
 
     public IImmutableList<string> Get()

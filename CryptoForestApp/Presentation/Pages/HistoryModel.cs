@@ -70,6 +70,7 @@ internal partial record HistoryModel
             {
                 var storage = new CryptoForestFileStorage(folder.Path);
                 var cryptoForest = AesCryptoForest.CreateCryptoForest(storage);
+                _historyService.Add(folder.Path);
                 await _navigator.NavigateViewModelAsync<CryptoForestViewModel>(this, data: new CryptoForestDto(cryptoForest), cancellation: cancellationToken);
             }
         }
