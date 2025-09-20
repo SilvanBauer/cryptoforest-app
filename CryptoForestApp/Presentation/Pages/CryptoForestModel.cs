@@ -42,9 +42,15 @@ internal partial record CryptoForestModel
         SelectedEntry = State.Value(this, () =>
             new Dictionary<string, ItemConfig>()
             {
-                { string.Empty, new ItemConfig(Guid.Empty, new KeyIV([], []), ItemType.Level) }
+                { string.Empty, new ItemConfig(Guid.Empty, KeyIV.Empty, ItemType.Level) }
             }.FirstOrDefault());
-        Entries = ListState.Value<CryptoForestModel, KeyValuePair<string, ItemConfig>>(this, () => [.. _currentLevel.GetLevels(), .. _currentLevel.GetItems()]);
+        var backEntry = new Dictionary<string, ItemConfig>();
+        if (_currentLevel.EntryGuid != _cryptoForest.GetBaseLevel().EntryGuid && _levelHistory[_index - 1].SearchQuery == string.Empty)
+        {
+            backEntry.Add("..", new ItemConfig(Guid.Empty, KeyIV.Empty, ItemType.Level));
+        }
+
+        Entries = ListState.Value<CryptoForestModel, KeyValuePair<string, ItemConfig>>(this, () => [.. backEntry, .. _currentLevel.GetLevels(), .. _currentLevel.GetItems()]);
     }
 
     public async Task GoBackAsync(CancellationToken cancellationToken)
@@ -82,10 +88,19 @@ internal partial record CryptoForestModel
 
     public async Task OpenAsync(CancellationToken cancellationToken)
     {
-        var selectedEntry = await SelectedEntry.Value(cancellationToken);
+        var selectedEntry = await SelectedEntry.Value(cancellationToken);        
         if (selectedEntry.Value.ItemType == ItemType.Level)
         {
-            await AddToHistoryAsync((LevelConfig)selectedEntry.Value, searchQuery: string.Empty, cancellationToken);
+            if (selectedEntry.Value.EntryGuid == Guid.Empty)
+            {
+                var parentLevel = _cryptoForest.GetBaseLevel().GetLevelOfLevel(_currentLevel.EntryGuid);
+                await AddToHistoryAsync(parentLevel, searchQuery: string.Empty, cancellationToken);
+            }
+            else
+            {
+                await AddToHistoryAsync((LevelConfig)selectedEntry.Value, searchQuery: string.Empty, cancellationToken);
+            }
+
             await IsBackPossible.UpdateAsync(_ => true, cancellationToken);
             await IsForwardPossible.UpdateAsync(_ => false, cancellationToken);
             await SearchQuery.UpdateAsync(_ => string.Empty, cancellationToken);
@@ -254,7 +269,13 @@ internal partial record CryptoForestModel
         var levelHistory = _levelHistory[_index];
         if (string.IsNullOrEmpty(levelHistory.SearchQuery))
         {
-            await Entries.UpdateAsync(_ => [.. _currentLevel.GetLevels(), .. _currentLevel.GetItems()], cancellationToken);
+            var backEntry = new Dictionary<string, ItemConfig>();
+            if (_currentLevel.EntryGuid != _cryptoForest.GetBaseLevel().EntryGuid)
+            {
+                backEntry.Add("..", new ItemConfig(Guid.Empty, KeyIV.Empty, ItemType.Level));
+            }
+
+            await Entries.UpdateAsync(_ => [.. backEntry, .. _currentLevel.GetLevels(), .. _currentLevel.GetItems()], cancellationToken);
         }
         else
         {
