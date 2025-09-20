@@ -1,4 +1,3 @@
-using System.Threading;
 using CryptoForestApp.Models;
 using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Presentation;
@@ -6,8 +5,6 @@ using CryptoForestApp.Presentation.Dialogs;
 using CryptoForestApp.Presentation.Pages;
 using CryptoForestApp.Services.HistoryService;
 using CryptoForestApp.Services.LevelsSourceProvider;
-using Microsoft.UI.Dispatching;
-using Windows.UI.Popups;
 
 namespace CryptoForestApp;
 public partial class App : Application
@@ -81,6 +78,7 @@ public partial class App : Application
             new DataViewMap<CryptoForestPage, CryptoForestViewModel, CryptoForestDto>(),
             new DataViewMap<AddItemPage, AddItemViewModel, AddItemDto>(),
             new DataViewMap<AddLevelPage, AddLevelViewModel, AddLevelDto>(),
+            new DataViewMap<ExportConfigPage, ExportConfigViewModel, ExportConfigDto>(),
 
             // Dialogs
             new DataViewMap<MoveContentDialog, MoveViewModel, MoveDto>(),
@@ -97,6 +95,7 @@ public partial class App : Application
                     new ("CryptoForest", View: views.FindByViewModel<CryptoForestViewModel>()),
                     new ("AddItem", View: views.FindByViewModel<AddItemViewModel>()),
                     new ("AddLevel", View: views.FindByViewModel<AddLevelViewModel>()),
+                    new ("ExportConfig", View: views.FindByViewModel<ExportConfigViewModel>()),
 
                     // Dialogs
                     new ("Move", View: views.FindByViewModel<MoveViewModel>()),

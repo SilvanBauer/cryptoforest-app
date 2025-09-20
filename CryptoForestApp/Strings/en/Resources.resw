@@ -350,4 +350,16 @@ Are you sure you want to close the CryptoForest?</value>
   <data name="NotExportedDialog.Title" xml:space="preserve">
     <value>Not exported changes</value>
   </data>
+  <data name="NoLevelsSelectedDialog.Title" xml:space="preserve">
+    <value>No levels selected</value>
+  </data>
+  <data name="NoLevelsSelectedDialog.Content" xml:space="preserve">
+    <value>Please select at least one level to export.</value>
+  </data>
+  <data name="ExportFailureDialog.Title" xml:space="preserve">
+    <value>Could not export levels config</value>
+  </data>
+  <data name="ExportFailureDialog.Content" xml:space="preserve">
+    <value>The export of the levels config failed. Please make sure you have write access to the selected location.</value>
+  </data>
 </root>

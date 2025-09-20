@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Services.HistoryService;
@@ -41,20 +42,16 @@ internal partial record OpenModel
 
     public async Task OpenAsync(CancellationToken cancellationToken)
     {
-        // Create 32 byte key from password
+        // Create 32 byte SHA256 hash key from password
         var password = (await Password.Value(cancellationToken))!;
-        while (password.Length < 16)
-        {
-            password = $"#{password}";
-        }
-
-        var key = Encoding.UTF8.GetBytes(password);
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        var hashBytes = SHA256.HashData(passwordBytes);
 
         // Create crypto forest and change view
         try
         {
             var storage = new CryptoForestFileStorage(_openDto.Path);
-            var cryptoForest = new AesCryptoForest(storage, key, (await SelectedFile.Value(cancellationToken))!);
+            var cryptoForest = new AesCryptoForest(storage, hashBytes, (await SelectedFile.Value(cancellationToken))!);
             _historyService.Add(_openDto.Path);
             await _navigator.NavigateViewAsync<CryptoForestViewModel>(this, data: new CryptoForestDto(cryptoForest), cancellation: cancellationToken);
         }

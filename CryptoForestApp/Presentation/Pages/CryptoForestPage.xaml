@@ -53,7 +53,7 @@
             <Button x:Uid="DeleteButton" Margin="5" Width="150" Command="{Binding DeleteAsync}" />
             <Button x:Uid="MoveButton" Margin="5" Width="150" Command="{Binding MoveAsync}" />
             <Button x:Uid="AddLevelButton" Margin="5" Width="150" Command="{Binding AddLevelAsync}" />
-            <Button x:Uid="ExportButton" Margin="5" Width="150" />
+            <Button x:Uid="ExportButton" Margin="5" Width="150" Command="{Binding ExportConfigAsync}" />
         </WrapPanel>
     </Grid>
 </Page>

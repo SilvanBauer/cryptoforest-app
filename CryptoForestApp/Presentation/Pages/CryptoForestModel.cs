@@ -201,12 +201,13 @@ internal partial record CryptoForestModel
 
             if (shouldDelete)
             {
-                deletionSuccessfull = await _cryptoForest.RemoveLevelAsync(entry.Value.EntryGuid, cancellationToken);
+                var removedGuids = await _cryptoForest.RemoveLevelAsync(entry.Value.EntryGuid, cancellationToken);
+                deletionSuccessfull = removedGuids.Contains(entry.Value.EntryGuid);
                 await RefreshAsync(cancellationToken);
 
                 if (deletionSuccessfull == true)
                 {
-                    (Application.Current as App)!.UnexportedLevels.Remove(entry.Value.EntryGuid);
+                    removedGuids.ForEach(guid => (Application.Current as App)!.UnexportedLevels.Remove(guid));
                 }
             }
         }
@@ -244,6 +245,9 @@ internal partial record CryptoForestModel
 
     public async Task AddLevelAsync(CancellationToken cancellationToken)
         => await _navigator.NavigateViewModelAsync<AddLevelViewModel>(this, data: new AddLevelDto(_currentLevel.EntryGuid, _cryptoForest), cancellation: cancellationToken);
+
+    public async Task ExportConfigAsync(CancellationToken cancellationToken)
+        => await _navigator.NavigateViewModelAsync<ExportConfigViewModel>(this, data: new ExportConfigDto(_cryptoForest), cancellation: cancellationToken);
 
     private async Task RefreshAsync(CancellationToken cancellationToken)
     {

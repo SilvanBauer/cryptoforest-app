@@ -350,4 +350,16 @@ Wollen Sie wirklich CrypotForest beenden?</value>
   <data name="NotExportedDialog.Title" xml:space="preserve">
     <value>Nicht exportierte Änderungen</value>
   </data>
+  <data name="NoLevelsSelectedDialog.Title" xml:space="preserve">
+    <value>Keine Ebenen ausgewählt</value>
+  </data>
+  <data name="NoLevelsSelectedDialog.Content" xml:space="preserve">
+    <value>Bitte wählen Sie mindestens eine Ebene zum exportieren aus.</value>
+  </data>
+  <data name="ExportFailureDialog.Title" xml:space="preserve">
+    <value>Ebenen Konfiguration konnten nicht exportiert werden</value>
+  </data>
+  <data name="ExportFailureDialog.Content" xml:space="preserve">
+    <value>Das exportieren der Ebenen Konfiguration ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie Schreibrechte auf den ausgewählten Ort haben.</value>
+  </data>
 </root>
