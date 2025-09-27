@@ -1,3 +1,4 @@
+using CryptoForestApp.Models;
 using CryptoForestApp.Models.Dtos;
 using CryptoForestApp.Services.HistoryService;
 using CryptoForestLibrary;
@@ -71,6 +72,7 @@ internal partial record HistoryModel
                 var storage = new CryptoForestFileStorage(folder.Path);
                 var cryptoForest = AesCryptoForest.CreateCryptoForest(storage);
                 _historyService.Add(folder.Path);
+                (Application.Current as App)!.UnexportedLevels.Add(cryptoForest.GetBaseLevel().EntryGuid);
                 await _navigator.NavigateViewModelAsync<CryptoForestViewModel>(this, data: new CryptoForestDto(cryptoForest), cancellation: cancellationToken);
             }
         }

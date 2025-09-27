@@ -33,9 +33,6 @@
     </UnoFeatures>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CryptoForestLib\CryptoForestLibrary.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="Presentation\Pages\HistoryPage.xaml.cs">
       <DependentUpon>HistoryPage.xaml</DependentUpon>
     </Compile>
@@ -77,6 +74,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Manual\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CryptoForestLib\CryptoForestLibrary\CryptoForestLibrary.csproj" />
   </ItemGroup>
 
 </Project>
