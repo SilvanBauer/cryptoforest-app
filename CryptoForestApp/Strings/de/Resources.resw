@@ -362,4 +362,10 @@ Wollen Sie wirklich CrypotForest beenden?</value>
   <data name="ExportFailureDialog.Content" xml:space="preserve">
     <value>Das exportieren der Ebenen Konfiguration ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie Schreibrechte auf den ausgewählten Ort haben.</value>
   </data>
+  <data name="CreationFailureDialog.Title" xml:space="preserve">
+    <value>CryptoForest erstellen fehlgeschlagen</value>
+  </data>
+  <data name="CreationFailureDialog.Content" xml:space="preserve">
+    <value>Das Erstellen des CryptoForests ist fehlgeschlagen. Bitte stellen Sie sicher, dass Sie Zugriff auf den ausgewählten Ordner haben.</value>
+  </data>
 </root>

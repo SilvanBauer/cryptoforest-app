@@ -50,30 +50,45 @@ internal partial record HistoryModel
         StorageFolder? folder = await folderPicker.PickSingleFolderAsync();
         if (folder != null)
         {
-            // Check if folder is empty and if not ask user for confirmation
-            var continueOnNonEmptyFolder = Directory.GetFiles(folder.Path).Length == 0 && Directory.GetDirectories(folder.Path).Length == 0;
-            if (!continueOnNonEmptyFolder)
+            try
             {
-                var createResult = await _navigator.ShowMessageDialogAsync<string>(
-                    this,
-                    title: _stringLocalizer["CreateDialog.Title"],
-                    content: _stringLocalizer["CreateDialog.Content"],
-                    buttons: [
-                        new DialogAction(_stringLocalizer["CreateDialog.CreateButton"]),
-                        new DialogAction(_stringLocalizer["CreateDialog.CancelButton"])
-                    ],
-                    cancellation: cancellationToken);
-                continueOnNonEmptyFolder = createResult == _stringLocalizer["CreateDialog.CreateButton"];
-            }
+                // Check if folder is empty and if not ask user for confirmation
+                var continueOnNonEmptyFolder = Directory.GetFiles(folder.Path).Length == 0 && Directory.GetDirectories(folder.Path).Length == 0;
+                if (!continueOnNonEmptyFolder)
+                {
+                    var createResult = await _navigator.ShowMessageDialogAsync<string>(
+                        this,
+                        title: _stringLocalizer["CreateDialog.Title"],
+                        content: _stringLocalizer["CreateDialog.Content"],
+                        buttons: [
+                            new DialogAction(_stringLocalizer["CreateDialog.CreateButton"]),
+                            new DialogAction(_stringLocalizer["CreateDialog.CancelButton"])
+                        ],
+                        cancellation: cancellationToken);
+                    continueOnNonEmptyFolder = createResult == _stringLocalizer["CreateDialog.CreateButton"];
+                }
 
-            // Open CryptoForest view if folder was empty or user confirmed
-            if (continueOnNonEmptyFolder)
+                // Open CryptoForest view if folder was empty or user confirmed
+                if (continueOnNonEmptyFolder)
+                {
+                
+                    var storage = new CryptoForestFileStorage(folder.Path);
+                    var cryptoForest = AesCryptoForest.CreateCryptoForest(storage);
+                    _historyService.Add(folder.Path);
+                    (Application.Current as App)!.UnexportedLevels.Add(cryptoForest.GetBaseLevel().EntryGuid);
+                    await _navigator.NavigateViewModelAsync<CryptoForestViewModel>(this, data: new CryptoForestDto(cryptoForest), cancellation: cancellationToken);
+                }
+            }
+            catch
             {
-                var storage = new CryptoForestFileStorage(folder.Path);
-                var cryptoForest = AesCryptoForest.CreateCryptoForest(storage);
-                _historyService.Add(folder.Path);
-                (Application.Current as App)!.UnexportedLevels.Add(cryptoForest.GetBaseLevel().EntryGuid);
-                await _navigator.NavigateViewModelAsync<CryptoForestViewModel>(this, data: new CryptoForestDto(cryptoForest), cancellation: cancellationToken);
+                await _navigator.ShowMessageDialogAsync<string>(
+                this,
+                title: _stringLocalizer["CreationFailureDialog.Title"],
+                content: _stringLocalizer["CreationFailureDialog.Content"],
+                buttons: [
+                    new DialogAction(_stringLocalizer["Ok"])
+                ],
+                cancellation: cancellationToken);
             }
         }
     }

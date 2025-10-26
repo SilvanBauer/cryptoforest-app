@@ -12,12 +12,13 @@
     <!-- App Identifier -->
     <ApplicationId>ch.silvanbauer.CryptoForestApp</ApplicationId>
     <!-- Versions -->
-    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
     <!-- Package Publisher -->
     <ApplicationPublisher>Silvan Bauer</ApplicationPublisher>
     <!-- Package Description -->
     <Description>CryptoForestApp powered by Uno Platform.</Description>
+    <Copyright>Copyright © Silvan Bauer 2025</Copyright>
 
     <!--
       UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.

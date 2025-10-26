@@ -24,7 +24,7 @@ internal partial record CryptoForestModel
 
     public IState<KeyValuePair<string, ItemConfig>> SelectedEntry { get; set; }
     public IListState<KeyValuePair<string, ItemConfig>> Entries { get; set; }
-    
+
     public CryptoForestModel(INavigator navigator, IStringLocalizer stringLocalizer, CryptoForestDto cryptoForestDto)
     {
         _navigator = navigator;
@@ -44,15 +44,20 @@ internal partial record CryptoForestModel
             {
                 { string.Empty, new ItemConfig(Guid.Empty, KeyIV.Empty, ItemType.Level) }
             }.FirstOrDefault());
-        // Creates the back entry if there the current history item is not a search query or the base level
+        // Creates the back entry if there the current history item is not the base level
         var backEntry = new Dictionary<string, ItemConfig>();
-        if (_currentLevel.EntryGuid != _cryptoForest.GetBaseLevel().EntryGuid && _levelHistory[_index - 1].SearchQuery == string.Empty)
+        if (_currentLevel.EntryGuid != _cryptoForest.GetBaseLevel().EntryGuid)
         {
             backEntry.Add("..", new ItemConfig(Guid.Empty, KeyIV.Empty, ItemType.Level));
         }
 
         // Combines the backEntry, the current levels and items of the _currentLevel
-        Entries = ListState.Value<CryptoForestModel, KeyValuePair<string, ItemConfig>>(this, () => [.. backEntry, .. _currentLevel.GetLevels(), .. _currentLevel.GetItems()]);
+        var searchQuery = _levelHistory[_index].SearchQuery;
+        Entries = ListState.Value<CryptoForestModel, KeyValuePair<string, ItemConfig>>(this, () =>
+            searchQuery == string.Empty ?
+                [.. backEntry, .. _currentLevel.GetLevels(), .. _currentLevel.GetItems()] :
+                [.. _currentLevel.SearchItems(searchQuery)]
+        );
     }
 
     public async Task GoBackAsync(CancellationToken cancellationToken)
@@ -77,20 +82,37 @@ internal partial record CryptoForestModel
 
     public async Task SearchAsync(CancellationToken cancellationToken)
     {
-        await AddToHistoryAsync(_cryptoForest.GetBaseLevel(), searchQuery: await SearchQuery.Value(cancellationToken), cancellationToken);
-        await RefreshAsync(cancellationToken);
+        var searchQuery = await SearchQuery.Value(cancellationToken);
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            await AddToHistoryAsync(_cryptoForest.GetBaseLevel(), searchQuery, cancellationToken);
+            await RefreshAsync(cancellationToken);
+        }
     }
 
     public async Task ResetAsync(CancellationToken cancellationToken)
     {
-        await AddToHistoryAsync(_cryptoForest.GetBaseLevel(), searchQuery: string.Empty, cancellationToken);
-        await SearchQuery.UpdateAsync(_ => _levelHistory[_index].SearchQuery, cancellationToken);
-        await RefreshAsync(cancellationToken);
+        if (!string.IsNullOrWhiteSpace(_levelHistory[_index].SearchQuery))
+        {
+            var previousLevel = _cryptoForest.GetBaseLevel();
+            for (var i = _levelHistory.Count - (_levelHistory.Count - _index + 1); i >= 0; i--)
+            {
+                if (string.IsNullOrWhiteSpace(_levelHistory[i].SearchQuery))
+                {
+                    previousLevel = _levelHistory[i].LevelConfig;
+                    break;
+                }
+            }
+
+            await AddToHistoryAsync(previousLevel, searchQuery: string.Empty, cancellationToken);
+            await SearchQuery.UpdateAsync(_ => _levelHistory[_index].SearchQuery, cancellationToken);
+            await RefreshAsync(cancellationToken);
+        }
     }
 
     public async Task OpenAsync(CancellationToken cancellationToken)
     {
-        var selectedEntry = await SelectedEntry.Value(cancellationToken);        
+        var selectedEntry = await SelectedEntry.Value(cancellationToken);
         if (selectedEntry.Value.ItemType == ItemType.Level)
         {
             // If the guid is empty then the .. item was clicked so the parent of the _currentLevel should be opened

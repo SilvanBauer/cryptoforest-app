@@ -362,4 +362,10 @@ Are you sure you want to close the CryptoForest?</value>
   <data name="ExportFailureDialog.Content" xml:space="preserve">
     <value>The export of the levels config failed. Please make sure you have write access to the selected location.</value>
   </data>
+  <data name="CreationFailureDialog.Title" xml:space="preserve">
+    <value>Failed to create CryptoForest</value>
+  </data>
+  <data name="CreationFailureDialog.Content" xml:space="preserve">
+    <value>The creation of the CryptoForest has failed. Please make sure you have access to the picked directory.</value>
+  </data>
 </root>
